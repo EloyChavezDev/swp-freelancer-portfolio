@@ -1,24 +1,32 @@
 ---
-title: Second opinion
-icon: spark
-number: S/06
-excerpt: One week of full attention on a single funnel, flow or launch, ending in a written verdict you can act on.
-description: A one-week review of a single flow, funnel or launch, delivered as a prioritised written verdict.
-tags: ['Teardown', 'Verdict', 'Priorities']
+title: Asesorías Grupales
+icon: users
+number: S/05
+excerpt: Asesorías para parejas, familias o grupos con objetivos financieros comunes.
+description: Asesorías grupales para aprender juntos y crear un plan financiero común.
+tags: ['Grupal', 'Parejas', 'Familias']
 features:
-  - One week, one flow, undivided attention
-  - Findings ordered by what they are costing you, not by how easy they are
-  - A written verdict, not a slide deck
-  - A call at the end to argue with the conclusions
+  - Para parejas o familias
+  - Plan financiero conjunto
+  - Aprendizaje colaborativo
+  - Más accesible
 process:
-  - title: Brief
-    body: One call to agree exactly which flow is under review and what success means.
-  - title: Review
-    body: Four days with the product, your analytics and your support inbox.
-  - title: Verdict
-    body: A written document with findings ranked by cost, and a call to discuss it.
-order: 6
+  - title: Reunión
+    body: Identificamos metas comunes.
+  - title: Planificación
+    body: Creamos un plan unificado.
+  - title: Seguimiento
+    body: Acompañamiento y ajustes.
+order: 5
 ---
+
+## ¿Para quién?
+
+Parejas que quieren alinear sus finanzas, familias que desean organizar su presupuesto o grupos con metas financieras en común.
+
+## ¿Qué lograrás?
+
+Mejor comunicación sobre dinero, un plan financiero común y acciones concretas para alcanzar sus metas juntos.
 
 ## When you do not need a project
 

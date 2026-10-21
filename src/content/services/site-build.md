@@ -1,24 +1,32 @@
 ---
-title: Site build
-icon: chart
-number: S/05
-excerpt: Fast, accessible front-end templates your marketing lead can edit without filing a ticket with engineering.
-description: Design and front-end build for marketing sites, with a content model that keeps edits out of the engineering backlog.
-tags: ['Templates', 'Content model', 'Access']
+title: Educación Financiera
+icon: book
+number: S/06
+excerpt: Programas de educación financiera para empresas, colegios y comunidades.
+description: Programas de capacitación en finanzas personales adaptados a tu equipo o comunidad.
+tags: ['Educación', 'Capacitación', 'Cultura Financiera']
 features:
-  - A content model built from the blocks your team actually publishes
-  - Static output that scores well without a performance sprint afterwards
-  - Content in Markdown — reviewable, editable and portable
-  - Accessibility tested with a keyboard before it ships
+  - Programas personalizados
+  - Presenciales o virtuales
+  - Contenido práctico y aplicable
+  - Para equipos o comunidades
 process:
-  - title: Model
-    body: What a page is made of, agreed as a small set of reusable blocks.
-  - title: Build
-    body: Templates and components, built static and checked at every breakpoint.
-  - title: Hand over
-    body: A walkthrough, documentation in the repository, and a month of questions answered.
-order: 5
+  - title: Diagnóstico
+    body: Identificamos necesidades específicas.
+  - title: Diseño
+    body: Creamos un programa a medida.
+  - title: Capacitación
+    body: Impartimos con ejemplos prácticos.
+order: 6
 ---
+
+## ¿Para quién?
+
+Empresas que quieren fortalecer la cultura financiera de sus colaboradores, colegios, universidades o comunidades que buscan aprender finanzas personales.
+
+## ¿Qué logramos?
+
+Mejor toma de decisiones financieras, mayor bienestar económico y una cultura financiera más sólida para tu organización o comunidad.
 
 ## Getting edits out of the backlog
 

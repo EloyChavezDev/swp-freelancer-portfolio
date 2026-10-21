@@ -2,41 +2,41 @@ import type { FaqItem } from '~/types';
 
 export const faq: FaqItem[] = [
   {
-    question: 'How long does a project usually take?',
+    question: '¿Cuánto dura una asesoría?',
     answer:
-      'A full product engagement runs six weeks end to end. An identity is three to four. A second opinion is one week. If your deadline is tighter than that, say so early and you will get an honest answer about whether it fits.',
+      'Las asesorías personalizadas se adaptan a tu necesidad. Un taller online tiene una duración definida, mientras que las asesorías pueden ser sesiones puntuales o un acompañamiento a lo largo del tiempo.',
   },
   {
-    question: 'Is the price fixed?',
+    question: '¿Las asesorías son presenciales o en línea?',
     answer:
-      'Yes, wherever the scope is defined. One number, one payment schedule and a written list of what sits inside it. Anything outside becomes a conversation before work starts, never a surprise line on an invoice.',
+      'Ofrezco ambas modalidades. Las asesorías pueden ser en línea (vía videollamada) o presenciales según tu ubicación y preferencia.',
   },
   {
-    question: 'Can you work alongside our engineers?',
+    question: '¿Cómo se crean las estrategias?',
     answer:
-      'That is the normal arrangement. I join your stand-ups, write specs in whatever format your team already uses, and stay reachable for a month after handover so questions get answered rather than guessed at.',
+      'Las estrategias se crean según tu estilo de vida, ingresos, gastos, deudas y metas. Cada plan es único y completamente personalizado para ti.',
   },
   {
-    question: 'What lands in my hands at the end?',
+    question: '¿Ayudas a salir de deudas?',
     answer:
-      'Source files, a component library with every state documented, a token sheet, exported assets and a written spec covering behaviour and edge cases. Build engagements also include the front-end templates and a configured theme.',
+      'Sí. Te ayudo a crear un plan realista para organizar tus deudas, priorizarlas y establecer un camino claro para salir de ellas sin afectar lo esencial.',
   },
   {
-    question: 'Do you take small pieces of work?',
+    question: '¿Sirve para empresas también?',
     answer:
-      'Sometimes. A single landing page, a pricing rewrite or a one-week review all fit comfortably. Anything larger tends to work better as a short sprint than as hours scattered across a quarter.',
+      'Sí. Ofrezco asesorías para empresas para ordenar finanzas, mejorar flujo de caja, establecer presupuestos y tomar decisiones financieras más acertadas.',
   },
   {
-    question: 'Who owns the work at the end?',
+    question: '¿Necesito tener conocimientos financieros?',
     answer:
-      'You do, completely, once the final payment clears. Files transfer into your accounts rather than living in mine. I only ask permission to show the work publicly, and I will keep it private if you would rather.',
+      'No. Mi enfoque es práctico y claro. Te explico todo paso a paso para que puedas aplicar lo aprendido desde el primer día.',
   },
 ];
 
 export const faqHeading = {
-  eyebrow: 'FAQ',
-  title: 'Asked before nearly every project.',
-  asideTitle: 'Not sure yet?',
+  eyebrow: 'Preguntas frecuentes',
+  title: 'Preguntas que suelen hacerme.',
+  asideTitle: '¿Tienes otra pregunta?',
   asideBody:
-    'Send a paragraph about what is going wrong. If I am not right for it I will say so and name someone who is, usually the same day.',
+    'Escríbeme y con gusto te respondo. Si tu caso requiere una asesoría, te ayudo a agendarla.',
 };

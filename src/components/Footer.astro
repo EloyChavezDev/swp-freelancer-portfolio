@@ -19,7 +19,7 @@ const year = new Date().getFullYear();
       <a class="ftr-brand" href="/">
         <img
           src={siteConfig.logo.footer.src}
-          alt={`${siteConfig.name} — home`}
+          alt={`${siteConfig.name} — inicio`}
           width={siteConfig.logo.footer.width}
           height={siteConfig.logo.footer.height}
           loading="lazy"
@@ -39,21 +39,21 @@ const year = new Date().getFullYear();
     </div>
 
     <nav aria-labelledby="ftr-explore">
-      <h2 id="ftr-explore">Explore</h2>
+      <h2 id="ftr-explore">Explorar</h2>
       <ul class="ftr-links">
         {footerNav.explore.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
       </ul>
     </nav>
 
     <nav aria-labelledby="ftr-services">
-      <h2 id="ftr-services">Services</h2>
+      <h2 id="ftr-services">Servicios</h2>
       <ul class="ftr-links">
         {services.map((s) => <li><a href={`/services/${s.id}/`}>{s.data.title}</a></li>)}
       </ul>
     </nav>
 
     <div>
-      <h2>Get in touch</h2>
+      <h2>Contacto</h2>
       <div class="ftr-cbox">
         <Icon name="mail" class="ic-sm" />
         <span><a href={`mailto:${siteConfig.contact.email}`}>{siteConfig.contact.email}</a></span>
@@ -70,7 +70,7 @@ const year = new Date().getFullYear();
   </div>
 
   <div class="wrap ftr-bot">
-    <p>&copy; {year} {siteConfig.copyrightHolder} &mdash; an Astro portfolio theme.</p>
+    <p>&copy; {year} {siteConfig.copyrightHolder}. Todos los derechos reservados.</p>
     <nav aria-label="Legal">
       {footerNav.legal.map((l) => <a href={l.href}>{l.label}</a>)}
     </nav>

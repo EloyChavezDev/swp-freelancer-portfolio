@@ -16,19 +16,19 @@ const services = (await getCollection('services'))
 const jsonLd = graph([
   personSchema(siteConfig),
   breadcrumbSchema([
-    { name: 'Home', url: `${siteConfig.url}/` },
-    { name: 'Services', url: `${siteConfig.url}/services/` },
+    { name: 'Inicio', url: `${siteConfig.url}/` },
+    { name: 'Servicios', url: `${siteConfig.url}/services/` },
   ]),
 ]);
 ---
 
 <PageLayout
-  title="Services"
-  heading="Six ways to put me to work."
-  eyebrow="Engagements"
-  intro="Fixed scope, fixed price, weekly demos. Each of these is a different size of commitment — the one-week review exists precisely so you do not have to start with the six-week one."
-  description="Art direction, interface design, design systems, identity, site build and one-week reviews."
-  crumbs={[{ label: 'Services' }]}
+  title="Servicios"
+  heading="Mis servicios para ordenar tus finanzas."
+  eyebrow="Servicios"
+  intro="TALLERES ONLINE • ASESORÍAS PERSONALIZADAS • CONFERENCIAS • ASESORÍAS PARA EMPRESAS. Estrategias creadas según tu estilo de vida para lograr tus metas de gastos, salir de deudas o ahorrar para lograr tus sueños."
+  description="Servicios de consultoría financiera: talleres online, asesorías personalizadas, conferencias y asesorías para empresas."
+  crumbs={[{ label: 'Servicios' }]}
   jsonLd={jsonLd}
 >
   <section class="wrap sec" style="padding-top:0" aria-labelledby="svc-list-h">

@@ -1,60 +1,32 @@
 ---
 import PageLayout from '~/layouts/PageLayout.astro';
 import siteConfig from '~/config/site';
----
 
+const updated = `Última actualización: ${new Date().getFullYear()}`;
+---
 <PageLayout
-  title="Terms"
-  heading="Terms"
+  title="Términos y Condiciones"
+  heading="Términos y Condiciones"
   eyebrow="Legal"
-  intro="The ordinary terms that come with a portfolio site."
-  description={`Terms of use for ${siteConfig.name}.`}
-  crumbs={[{ label: 'Terms' }]}
+  intro="Condiciones de uso de este sitio web."
+  description={`Términos y condiciones de ${siteConfig.name}.`}
+  crumbs={[{ label: 'Términos y Condiciones' }]}
 >
   <section class="wrap sec" style="padding-top:0">
     <div class="prose rev">
-      <p class="form-note">
-        <strong>Template — replace before you publish.</strong> This page is a starting
-        point written for the demo site, not legal advice. Edit it in
-        <code>src/pages/terms.astro</code>.
-      </p>
-
-      <h2>Using this site</h2>
-      <p>
-        This is a portfolio. You are welcome to read it, link to it and quote from it with
-        attribution. Republishing whole pages as your own is not welcome.
-      </p>
-
-      <h2>The work shown here</h2>
-      <p>
-        Case studies describe demo projects created for this theme. On a real deployment,
-        replace this paragraph with a note about which work is shown with client
-        permission and who holds the rights to it.
-      </p>
-
-      <h2>Accuracy</h2>
-      <p>
-        Content is published in good faith and may go out of date. Nothing here is a
-        contractual offer; scope and price are agreed in writing before any work starts.
-      </p>
-
-      <h2>Links out</h2>
-      <p>
-        External links are provided for convenience. The sites they point at are not under
-        this site's control and are not its responsibility.
-      </p>
-
-      <h2>Liability</h2>
-      <p>
-        The site is provided as is. To the extent the law allows, no liability is accepted
-        for loss arising from its use. Local consumer law may give you rights that cannot
-        be excluded, and nothing here limits those.
-      </p>
-
-      <h2>Questions</h2>
-      <p>
-        Send them to <a href={`mailto:${siteConfig.contact.email}`}>{siteConfig.contact.email}</a>.
-      </p>
+      <p class="mini muted">{updated}</p>
+      <h2>Uso del sitio</h2>
+      <p>Al utilizar este sitio web, aceptas cumplir con estos términos y condiciones.</p>
+      <h2>Servicios</h2>
+      <p>La información aquí mostrada es de carácter general. Los servicios de asesoría financiera se formalizan mediante un acuerdo específico entre ambas partes.</p>
+      <h2>Propiedad intelectual</h2>
+      <p>Todo el contenido de este sitio web es propiedad de {siteConfig.name} y está protegido por la legislación aplicable.</p>
+      <h2>Enlaces a terceros</h2>
+      <p>Este sitio puede contener enlaces a sitios externos. No nos responsabilizamos por el contenido o las políticas de privacidad de dichos sitios.</p>
+      <h2>Modificaciones</h2>
+      <p>Nos reservamos el derecho de modificar estos términos en cualquier momento sin previo aviso.</p>
+      <h2>Contacto</h2>
+      <p>Para cualquier consulta sobre estos términos, escríbenos a <a href={`mailto:${siteConfig.contact.email}`}>{siteConfig.contact.email}</a>.</p>
     </div>
   </section>
 </PageLayout>

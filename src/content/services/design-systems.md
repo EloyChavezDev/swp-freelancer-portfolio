@@ -1,41 +1,29 @@
 ---
-title: Design systems
-icon: pen
-number: S/03
-excerpt: Tokens, components and the written rules that stop the tenth screen drifting away from the first.
-description: A right-sized design system — tokens, components and documentation your team will actually maintain.
-tags: ['Tokens', 'Library', 'Docs']
+title: Asesorías Personalizadas
+icon: target
+number: S/02
+excerpt: Asesorías individuales para crear estrategias según tu estilo de vida y alcanzar tus metas.
+description: Asesorías financieras personalizadas para lograr tus metas, salir de deudas o ahorrar.
+tags: ['Personalizado', 'Deudas', 'Ahorro']
 features:
-  - A token set named for what things do, not what they currently look like
-  - Components sized to your team, not to a theoretical enterprise
-  - Documentation that lives beside the code so it stays current
-  - A contribution model for adding the eleventh component without me
+  - Diagnóstico financiero completo
+  - Plan personalizado y realista
+  - Estrategias para salir de deudas
+  - Seguimiento y ajustes
 process:
-  - title: Inventory
-    body: Every component currently in use, including the six buttons nobody meant to make.
-  - title: Consolidate
-    body: One set of tokens and a component library scoped to what you actually ship.
-  - title: Document
-    body: Written rules, a contribution path, and a walkthrough with your engineers.
-order: 3
+  - title: Diagnóstico
+    body: Analizamos tu situación financiera actual.
+  - title: Estrategia
+    body: Creamos un plan adaptado a tu estilo de vida.
+  - title: Acompañamiento
+    body: Te guío hasta alcanzar tus objetivos.
+order: 2
 ---
 
-## Right-sized, not impressive
+## ¿Para quién?
 
-A design system built for a company four times your size is a liability. It takes longer
-to learn than to ignore, and once a team starts ignoring it, it decays faster than having
-no system at all.
+Ideal para quienes quieren una solución personalizada para ordenar sus finanzas, salir de deudas, ahorrar para un objetivo o mejorar su relación con el dinero. 
 
-What gets built here is scoped to the product you have and the people who will maintain
-it. If that is nine components and forty tokens, it is nine components and forty tokens.
+## ¿Qué lograrás?
 
-## Naming that survives a rebrand
-
-Tokens get named for their role — `surface-raised`, `text-quiet`, `accent-action` — not
-for their current value. When the brand changes, the values change and the four hundred
-references do not.
-
-## What you get
-
-A token sheet, a component library with states documented, written rules for
-contribution, and a walkthrough session with your engineers.
+Un plan claro, práctico y sostenible para tomar control de tus finanzas y alcanzar tus metas sin sacrificar lo que más valoras.

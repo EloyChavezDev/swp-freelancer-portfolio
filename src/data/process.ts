@@ -2,34 +2,34 @@ import type { ProcessStep } from '~/types';
 
 export const process: ProcessStep[] = [
   {
-    stage: 'Stage 01',
-    title: 'Listen',
-    body: 'Two calls with you, four with your customers, plus every support ticket you are willing to share. I come back with the problem in one paragraph and you tell me where I got it wrong.',
-    timing: 'Week 1',
+    stage: 'Paso 01',
+    title: 'Diagnóstico',
+    body: 'Analizamos tu situación financiera actual: ingresos, gastos, deudas, ahorros y metas. Identificamos áreas de oportunidad y prioridades.',
+    timing: 'Sesión 1',
   },
   {
-    stage: 'Stage 02',
-    title: 'Frame',
-    body: 'Structure, flows and the hard trade-offs on paper before anything gets styled. You sign off a skeleton, which costs far less to change than a finished screen.',
-    timing: 'Week 2',
+    stage: 'Paso 02',
+    title: 'Planificación',
+    body: 'Creamos un plan personalizado según tu estilo de vida. Definimos metas claras, presupuesto realista y estrategia para alcanzar tus objetivos.',
+    timing: 'Sesión 2',
   },
   {
-    stage: 'Stage 03',
-    title: 'Draw',
-    body: 'Full-fidelity work with real copy and the ugly states included — loading, empty, error, name-far-too-long. Reviewed live, cameras on, every Thursday.',
-    timing: 'Weeks 3–5',
+    stage: 'Paso 03',
+    title: 'Implementación',
+    body: 'Te acompaño en la aplicación del plan. Ajustamos sobre la marcha para que sea práctico, viable y sostenible.',
+    timing: 'A lo largo',
   },
   {
-    stage: 'Stage 04',
-    title: 'Leave well',
-    body: 'Component library, tokens, a written spec and a walkthrough with your engineers. A month of questions answered at no charge afterwards.',
-    timing: 'Week 6',
+    stage: 'Paso 04',
+    title: 'Seguimiento',
+    body: 'Revisamos avances, medimos resultados y ajustamos la estrategia según sea necesario para mantenerte en camino hacia tus metas.',
+    timing: 'Continuo',
   },
 ];
 
 export const processHeading = {
-  eyebrow: 'The shape of it',
-  title: 'Four stages, and you see something every Thursday.',
+  eyebrow: 'Mi método',
+  title: 'Un proceso claro para ordenar tus finanzas.',
   intro:
-    'The order is load-bearing. Each stage hands the next one something it cannot start without, which is how we avoid designing a screen for a decision nobody has made.',
+    'Un enfoque práctico, realista y personalizado. Sin fórmulas complicadas, con estrategias que realmente puedes aplicar a tu día a día.',
 };

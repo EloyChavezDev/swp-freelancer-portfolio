@@ -1,37 +1,29 @@
 ---
-title: Identity
-icon: code
-number: S/04
-excerpt: Marks, type and colour scoped for a team that has no design department to maintain any of it.
-description: Identity design for small teams — a mark, a type scale and rules short enough that people read them.
-tags: ['Mark', 'Type', 'Guide']
+title: Conferencias
+icon: mic
+number: S/03
+excerpt: Charlas y conferencias sobre finanzas personales para empresas, colegios y eventos.
+description: Conferencias educativas y prácticas sobre finanzas personales adaptadas a tu audiencia.
+tags: ['Conferencias', 'Educación Financiera', 'Eventos']
 features:
-  - A primary mark with the two lockups you will actually use
-  - A type scale named for its job, with a self-hosted font setup
-  - A palette with contrast ratios documented, not assumed
-  - A guideline short enough that people read it
+  - Presenciales o virtuales
+  - Contenido adaptado a la audiencia
+  - Enfoque práctico y motivador
+  - Dinámicas interactivas
 process:
-  - title: Position
-    body: What the company is for, in a sentence everyone can agree on before we draw anything.
-  - title: Draw
-    body: Three directions, narrowed to one, then built out on real surfaces.
-  - title: Package
-    body: Asset kit, font setup and a short written guideline.
-order: 4
+  - title: Planificación
+    body: Conocemos tu evento y objetivos.
+  - title: Personalización
+    body: Adapto la charla a tu audiencia.
+  - title: Impartición
+    body: Conferencia clara, práctica y motivadora.
+order: 3
 ---
 
-## For teams without a design department
+## ¿Para quién?
 
-If nobody at your company owns the brand full-time, the identity has to hold itself
-together. That changes what gets made: fewer variants, clearer rules, and everything
-exported at the sizes you need before you need them.
+Empresas, universidades, colegios, asociaciones o cualquier evento que busque promover la educación financiera. 
 
-## The guideline is short on purpose
+## Temas
 
-A hundred-page guideline is a filing cabinet. Four to eight pages, mostly covering what
-not to do, gets read — and a guideline that gets read is the only kind that works.
-
-## What you get
-
-A primary mark and lockups, a type scale with a self-hosted font setup, a documented
-palette, an asset kit sized for every surface, and a short written guideline.
+Finanzas personales, presupuesto, ahorro, manejo de deudas, educación financiera para jóvenes y bienestar financiero.
