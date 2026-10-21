@@ -1,6 +1,6 @@
 ---
 title: Educación Financiera
-icon: book
+icon: chart
 number: S/06
 excerpt: Programas de educación financiera para empresas, colegios y comunidades.
 description: Programas de capacitación en finanzas personales adaptados a tu equipo o comunidad.

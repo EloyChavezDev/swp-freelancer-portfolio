@@ -1,6 +1,6 @@
 ---
 title: Asesorías para Empresas
-icon: briefcase
+icon: code
 number: S/04
 excerpt: Asesorías financieras para empresas para mejorar flujo de caja y tomar mejores decisiones.
 description: Asesoría financiera empresarial para ordenar finanzas y optimizar recursos.

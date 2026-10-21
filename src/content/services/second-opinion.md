@@ -1,6 +1,6 @@
 ---
 title: Asesorías Grupales
-icon: users
+icon: flag
 number: S/05
 excerpt: Asesorías para parejas, familias o grupos con objetivos financieros comunes.
 description: Asesorías grupales para aprender juntos y crear un plan financiero común.

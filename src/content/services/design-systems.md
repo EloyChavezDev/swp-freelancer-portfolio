@@ -1,6 +1,6 @@
 ---
 title: Asesorías Personalizadas
-icon: target
+icon: spark
 number: S/02
 excerpt: Asesorías individuales para crear estrategias según tu estilo de vida y alcanzar tus metas.
 description: Asesorías financieras personalizadas para lograr tus metas, salir de deudas o ahorrar.

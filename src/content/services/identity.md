@@ -1,6 +1,6 @@
 ---
 title: Conferencias
-icon: mic
+icon: chart
 number: S/03
 excerpt: Charlas y conferencias sobre finanzas personales para empresas, colegios y eventos.
 description: Conferencias educativas y prácticas sobre finanzas personales adaptadas a tu audiencia.
