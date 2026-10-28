@@ -4,13 +4,20 @@ export const primaryNav: NavItem[] = [
   { label: 'Inicio', href: '/' },
   { label: 'Acerca de', href: '/about/', anchor: '#about' },
   { label: 'Servicios', href: '/services/', anchor: '#services' },
+  {
+    label: 'Herramientas',
+    href: '/herramientas/',
+    children: [
+      { label: 'Tiempo', href: '/herramientas/tiempo/' },
+    ],
+  },
   { label: 'Testimonios', href: '/about/#testimonials' },
   { label: 'Blog', href: '/journal/', anchor: '#journal' },
   { label: 'Contacto', href: '/contact/' },
 ];
 
 export const mobileExtraNav: NavItem[] = [
-  { label: 'Herramientas', href: '/about/#toolkit' },
+  { label: 'Herramientas', href: '/herramientas/tiempo/' },
   { label: 'Proceso', href: '/about/#process' },
   { label: 'Preguntas frecuentes', href: '/contact/#faq' },
 ];

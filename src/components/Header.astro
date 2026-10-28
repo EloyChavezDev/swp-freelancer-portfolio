@@ -37,14 +37,37 @@ function target(href: string, anchor?: string) {
       {
         primaryNav.map((item) => {
           const s = state(item.href);
+          const hasChildren = item.children && item.children.length > 0;
           return (
-            <a
-              href={target(item.href, item.anchor)}
-              aria-current={s === 'page' ? 'page' : undefined}
-              class={s === 'section' ? 'is-section' : undefined}
-            >
-              {item.label}
-            </a>
+            <div class={['nav-item', hasChildren && 'has-children'].filter(Boolean).join(' ')}>
+              <a
+                href={target(item.href, item.anchor)}
+                aria-current={s === 'page' ? 'page' : undefined}
+                class={s === 'section' ? 'is-section' : undefined}
+                aria-haspopup={hasChildren ? 'true' : undefined}
+                aria-expanded={hasChildren ? 'false' : undefined}
+              >
+                {item.label}
+                {hasChildren && <Icon name="arrow" class="ic-xs nav-arrow" />}
+              </a>
+              {hasChildren && (
+                <div class="nav-dropdown" aria-hidden="true">
+                  <div class="nav-dropdown-inner">
+                    {item.children.map((child) => {
+                      const cs = state(child.href);
+                      return (
+                        <a
+                          href={child.href}
+                          aria-current={cs === 'page' ? 'page' : undefined}
+                        >
+                          {child.label}
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
           );
         })
       }
@@ -119,4 +142,49 @@ function target(href: string, anchor?: string) {
       if (e.matches) setOpen(false);
     });
   }
+
+  // Desktop dropdown toggle (hover + keyboard support)
+  const navItems = document.querySelectorAll<HTMLElement>('.nav-item.has-children');
+  navItems.forEach((item) => {
+    const link = item.querySelector<HTMLElement>('.nav-item > a');
+    const dropdown = item.querySelector<HTMLElement>('.nav-dropdown');
+
+    if (!link || !dropdown) return;
+
+    let hideTimer: number | null = null;
+
+    const show = () => {
+      if (hideTimer) clearTimeout(hideTimer);
+      dropdown.classList.add('open');
+      link.setAttribute('aria-expanded', 'true');
+    };
+
+    const hide = () => {
+      hideTimer = setTimeout(() => {
+        dropdown.classList.remove('open');
+        link.setAttribute('aria-expanded', 'false');
+      }, 150);
+    };
+
+    item.addEventListener('mouseenter', show);
+    item.addEventListener('mouseleave', hide);
+
+    // Keyboard: Enter/Space toggles; Escape closes
+    link.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (dropdown.classList.contains('open')) {
+          hide();
+        } else {
+          show();
+        }
+      } else if (e.key === 'Escape') {
+        hide();
+      }
+    });
+
+    // Keep dropdown open while interacting with it
+    dropdown.addEventListener('mouseenter', show);
+    dropdown.addEventListener('mouseleave', hide);
+  });
 </script>
