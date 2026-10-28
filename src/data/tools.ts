@@ -19,6 +19,12 @@ export const tools: ToolkitItem[] = [
     detail: 'Compara cuánto te cuesta una deuda contra lo que podrías ganar invirtiendo ese mismo dinero.',
     href: '/herramientas/deuda-vs-inversion/',
   },
+  {
+    icon: 'trending-up',
+    title: 'Interés Compuesto — Simulador de Inversión',
+    detail: 'Proyecta el crecimiento de tu inversión con interés compuesto y aportes periódicos.',
+    href: '/herramientas/Interes-compuesto/',
+  },
 ];
 
 export const toolsHeading = {

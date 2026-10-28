@@ -21,6 +21,7 @@ export type IconName =
   | 'facebook'
   | 'flag'
   | 'trending-down'
+  | 'trending-up'
   | 'grid'
   | 'instagram'
   | 'layers'
