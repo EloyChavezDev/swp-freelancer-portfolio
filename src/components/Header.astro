@@ -58,6 +58,7 @@ function target(href: string, anchor?: string) {
                       return (
                         <a
                           href={child.href}
+                          target={child.target}
                           aria-current={cs === 'page' ? 'page' : undefined}
                         >
                           {child.label}

@@ -8,7 +8,7 @@ export const primaryNav: NavItem[] = [
     label: 'Herramientas',
     href: '/herramientas/',
     children: [
-      { label: 'Tiempo', href: '/herramientas/tiempo/' },
+      { label: 'Tiempo', href: '/herramientas/tiempo/', target: '_blank' },
     ],
   },
   { label: 'Testimonios', href: '/about/#testimonials' },
@@ -17,7 +17,7 @@ export const primaryNav: NavItem[] = [
 ];
 
 export const mobileExtraNav: NavItem[] = [
-  { label: 'Herramientas', href: '/herramientas/tiempo/' },
+  { label: 'Herramientas', href: '/herramientas/tiempo/', target: '_blank' },
   { label: 'Proceso', href: '/about/#process' },
   { label: 'Preguntas frecuentes', href: '/contact/#faq' },
 ];

@@ -45,6 +45,8 @@ export interface NavItem {
   href: string;
   /** Optional same-page anchor used on the homepage only. */
   anchor?: string;
+  /** Optional target attribute for the link, e.g. `_blank`. */
+  target?: string;
   /** Optional dropdown children when this item is a menu group. */
   children?: NavItem[];
 }
