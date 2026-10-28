@@ -6,11 +6,11 @@ export const primaryNav: NavItem[] = [
   { label: 'Servicios', href: '/services/', anchor: '#services' },
   {
     label: 'Herramientas',
-    href: '/herramientas/',
+    href: '/#tools',
     children: [
-      { label: 'Tiempo', href: '/herramientas/tiempo/', target: '_blank' },
-      { label: '0 deudas', href: '/herramientas/cero-deudas/', target: '_blank' },
-      { label: 'Deuda vs inversión', href: '/herramientas/deuda-vs-inversion/', target: '_blank' },
+      { label: 'Tiempo', href: '/herramientas/tiempo/' },
+      { label: '0 deudas', href: '/herramientas/cero-deudas/' },
+      { label: 'Deuda vs inversión', href: '/herramientas/deuda-vs-inversion/' },
     ],
   },
   { label: 'Testimonios', href: '/about/#testimonials' },
@@ -19,7 +19,7 @@ export const primaryNav: NavItem[] = [
 ];
 
 export const mobileExtraNav: NavItem[] = [
-  { label: 'Herramientas', href: '/herramientas/tiempo/', target: '_blank' },
+  { label: 'Herramientas', href: '/#tools' },
   { label: 'Proceso', href: '/about/#process' },
   { label: 'Preguntas frecuentes', href: '/contact/#faq' },
 ];

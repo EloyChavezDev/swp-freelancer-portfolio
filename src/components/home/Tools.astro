@@ -1,0 +1,31 @@
+---
+import Icon from '../Icon.astro';
+import SectionHeading from '../SectionHeading.astro';
+import { tools, toolsHeading } from '~/data/tools';
+---
+
+<section class="wrap sec sec-top tools" id="tools" aria-labelledby="tools-h">
+  <SectionHeading
+    class="rev"
+    eyebrow={toolsHeading.eyebrow}
+    title={toolsHeading.title}
+    intro={toolsHeading.intro}
+    id="tools-h"
+  />
+  <div class="tools-grid">
+    {
+      tools.map((item, i) => (
+        <a
+          href={item.href}
+          class:list={['tools-card', 'rev', i > 0 && `rev-d${i}`]}
+        >
+          <div class="tools-card-icon">
+            <Icon name={item.icon} label={item.title} class="ic-lg" />
+          </div>
+          <h3 class="tools-card-title">{item.title}</h3>
+          <p class="tools-card-detail">{item.detail}</p>
+        </a>
+      ))
+    }
+  </div>
+</section>

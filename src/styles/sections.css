@@ -682,6 +682,71 @@
 .kit-item span { font-size: 12.8px; color: var(--swp-slate); line-height: 1.5; }
 
 /* ============================================================
+   8b. Financial tools (homepage section)
+   ============================================================ */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(16px, 2vw, 26px);
+}
+.tools-card {
+  display: block;
+  border-radius: var(--r-lg);
+  padding: clamp(22px, 2.4vw, 30px);
+  background: var(--swp-mist);
+  border: 1px solid var(--swp-line);
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: background 0.35s var(--ease), border-color 0.35s var(--ease), transform 0.35s var(--ease);
+}
+.tools-card:hover,
+.tools-card:focus-visible {
+  background: var(--swp-ink);
+  color: #fff;
+  border-color: var(--swp-ink);
+  transform: translateY(-4px);
+}
+.tools-card:focus-visible { outline: 3px solid var(--swp-ink); outline-offset: 3px; }
+.tools-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--swp-shell);
+  color: var(--swp-ink);
+  display: grid;
+  place-items: center;
+  flex: none;
+  transition: background 0.35s var(--ease), color 0.35s var(--ease);
+}
+.tools-card:hover .tools-card-icon,
+.tools-card:focus-visible .tools-card-icon {
+  background: var(--swp-lime);
+  color: var(--swp-ink);
+}
+.tools-card-icon svg { width: 22px; height: 22px; }
+.tools-card-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin: 0;
+}
+.tools-card:hover .tools-card-title,
+.tools-card:focus-visible .tools-card-title { color: #fff; }
+.tools-card-detail {
+  font-size: 13.4px;
+  color: var(--swp-slate);
+  line-height: 1.6;
+  margin: 0;
+}
+.tools-card:hover .tools-card-detail,
+.tools-card:focus-visible .tools-card-detail { color: rgba(255, 255, 255, 0.75); }
+
+/* ============================================================
    9. Work
    ============================================================ */
 .work-filters { display: flex; flex-wrap: wrap; gap: 8px; }
