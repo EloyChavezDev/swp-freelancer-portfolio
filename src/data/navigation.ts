@@ -7,11 +7,7 @@ export const primaryNav: NavItem[] = [
   {
     label: 'Herramientas',
     href: '/#tools',
-    children: [
-      { label: 'Tiempo', href: '/herramientas/tiempo/' },
-      { label: '0 deudas', href: '/herramientas/cero-deudas/' },
-      { label: 'Deuda vs inversión', href: '/herramientas/deuda-vs-inversion/' },
-    ],
+    
   },
   { label: 'Testimonios', href: '/about/#testimonials' },
   { label: 'Blog', href: '/journal/', anchor: '#journal' },
