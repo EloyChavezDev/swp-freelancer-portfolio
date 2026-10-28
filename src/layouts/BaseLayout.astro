@@ -158,6 +158,7 @@ const theme = 'light';
           toggle.setAttribute('aria-pressed', current === 'dark' ? 'true' : 'false');
 
           toggle.addEventListener('click', () => {
+            const current = root.getAttribute('data-theme') || 'light';
             const next = current === 'dark' ? 'light' : 'dark';
             setTheme(next);
           });

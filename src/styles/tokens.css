@@ -17,6 +17,9 @@
   --swp-faint: #8c9280;
   --swp-shell: #ffffff;
 
+  /* Footer background stays dark in both modes */
+  --swp-footer-bg: #101110;
+
   /* Status */
   --swp-live: #3fa34d;
 
@@ -51,6 +54,7 @@
   --swp-mist: #171816;
   --swp-line: #272826;
   --swp-faint: #737868;
+  --swp-footer-bg: #101110;
 
   /* Status */
   --swp-live: #3fa34d;

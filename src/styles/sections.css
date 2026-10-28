@@ -5,7 +5,7 @@
   position: sticky;
   top: 0;
   z-index: 60;
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--swp-shell);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid transparent;
@@ -69,7 +69,7 @@
   top: 100%;
   left: 0;
   min-width: 200px;
-  background: #fff;
+  background: var(--swp-shell);
   border: 1px solid var(--swp-line);
   border-radius: var(--r-md);
   box-shadow: 0 20px 40px -20px rgba(16, 17, 16, 0.5);
@@ -125,7 +125,7 @@
 .mnav {
   border-top: 1px solid var(--swp-line);
   padding: 14px var(--pad) 26px;
-  background: #fff;
+  background: var(--swp-shell);
   max-height: calc(100dvh - 82px);
   overflow-y: auto;
 }
@@ -1057,7 +1057,7 @@
 /* ============================================================
    16. Footer
    ============================================================ */
-.ftr { background: var(--swp-ink); color: #fff; padding-top: clamp(52px, 5.4vw, 84px); }
+.ftr { background: var(--swp-footer-bg); color: #fff; padding-top: clamp(52px, 5.4vw, 84px); }
 .ftr-top {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
