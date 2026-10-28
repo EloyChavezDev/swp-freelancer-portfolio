@@ -16,7 +16,7 @@ export const hero = {
   ctaLabel: 'Agenda una asesoría',
   ctaHref: '/contact/',
   photo: {
-    src: '/images/hero-portrait.webp',
+    src: '/images/hero-portrait.jpg',
     alt: 'Consultor financiero',
     width: 960,
     height: 1210,

@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-900 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora y Analizador: Deudas vs. Inversiones</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        debt: {
+                            50: '#fef2f2',
+                            100: '#ffe1e1',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                        },
+                        invest: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        /* Custom scrollbar for subtle look */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="min-h-full flex flex-col justify-between antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- Header Section -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="p-2.5 bg-gradient-to-tr from-indigo-600 to-emerald-500 rounded-xl shadow-lg shadow-indigo-500/20">
+                    <i data-lucide="scale" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+                        Optimizador Finanzas
+                    </h1>
+                    <p class="text-xs text-slate-400 font-medium">Deudas vs. Inversiones (Análisis de Rendimiento Neto)</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="resetToDefaults()" class="text-xs px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white transition flex items-center gap-1.5">
+                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                    <span class="hidden sm:inline">Restablecer Ejemplo</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow space-y-8">
+
+        <!-- Top Banner / Key Metrics Summary Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <!-- Total Deuda Card -->
+            <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5 relative overflow-hidden backdrop-blur-sm shadow-xl">
+                <div class="absolute -right-4 -bottom-4 opacity-10 text-rose-500">
+                    <i data-lucide="trending-down" class="w-32 h-32"></i>
+                </div>
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-rose-400 flex items-center gap-1.5">
+                        <i data-lucide="arrow-down-circle" class="w-4 h-4"></i> Deuda Total
+                    </span>
+                    <span id="weightedCatBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                        CAT Ponderado: 0%
+                    </span>
+                </div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight" id="totalDebtAmount">$0</div>
+                <div class="mt-2 text-xs text-slate-400 flex justify-between items-center border-t border-slate-700/40 pt-2">
+                    <span>Costo Financiero Anual:</span>
+                    <span class="text-rose-400 font-semibold" id="totalDebtCost">$0/año</span>
+                </div>
+            </div>
+
+            <!-- Total Inversión Card -->
+            <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5 relative overflow-hidden backdrop-blur-sm shadow-xl">
+                <div class="absolute -right-4 -bottom-4 opacity-10 text-emerald-500">
+                    <i data-lucide="trending-up" class="w-32 h-32"></i>
+                </div>
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                        <i data-lucide="arrow-up-circle" class="w-4 h-4"></i> Inversión Total
+                    </span>
+                    <span id="weightedReturnBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        Rend. Ponderado: 0%
+                    </span>
+                </div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight" id="totalInvestAmount">$0</div>
+                <div class="mt-2 text-xs text-slate-400 flex justify-between items-center border-t border-slate-700/40 pt-2">
+                    <span>Ganancia Estimada Anual:</span>
+                    <span class="text-emerald-400 font-semibold" id="totalInvestReturn">$0/año</span>
+                </div>
+            </div>
+
+            <!-- Balance Neto Anual Card -->
+            <div id="netBalanceCard" class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5 relative overflow-hidden backdrop-blur-sm shadow-xl transition-all duration-300">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                        <i data-lucide="calculator" class="w-4 h-4 text-indigo-400"></i> Balance Neto Anual
+                    </span>
+                    <span id="netSpreadBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-700 text-slate-300">
+                        Dif. Tasa: 0%
+                    </span>
+                </div>
+                <div class="text-2xl sm:text-3xl font-extrabold tracking-tight" id="netBalanceAmount">$0</div>
+                <div class="mt-2 text-xs text-slate-400 flex justify-between items-center border-t border-slate-700/40 pt-2">
+                    <span>Resultado Financiero:</span>
+                    <span class="font-bold" id="netStatusLabel">Neutro</span>
+                </div>
+            </div>
+
+            <!-- Diagnóstico Rápido Card -->
+            <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5 relative overflow-hidden backdrop-blur-sm shadow-xl flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">
+                            <i data-lucide="compass" class="w-4 h-4"></i> Diagnóstico Rápido
+                        </span>
+                        <span id="priorityBadge" class="text-xs font-bold px-2 py-0.5 rounded uppercase">--</span>
+                    </div>
+                    <p id="quickSummaryText" class="text-xs text-slate-300 leading-relaxed font-medium">
+                        Cargando diagnóstico financiero...
+                    </p>
+                </div>
+                <div class="pt-2 border-t border-slate-700/40">
+                    <a href="#recommendations" class="text-xs font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+                        Ver plan de acción <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                    </a>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Main Interactive Section: Form Inputs (Debts & Investments) -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- SECTION DEUDAS -->
+            <div class="bg-slate-800/40 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <!-- Header -->
+                    <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-700/50">
+                        <div class="flex items-center space-x-3">
+                            <div class="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400">
+                                <i data-lucide="credit-card" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-lg font-bold text-white">Tus Deudas</h2>
+                                <p class="text-xs text-slate-400">Pasivos y préstamos vigentes con sus tasas CAT</p>
+                            </div>
+                        </div>
+                        <button onclick="openDebtModal()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-semibold transition shadow-lg shadow-rose-600/20 flex items-center gap-1">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Agregar
+                        </button>
+                    </div>
+
+                    <!-- List Container -->
+                    <div id="debtsList" class="space-y-3 max-h-[360px] overflow-y-auto pr-1">
+                        <!-- Dynamic Debts Rendered Here -->
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-800 text-xs text-slate-500 flex justify-between items-center">
+                    <span>* CAT: Costo Anual Total (incluye intereses, comisiones y seguros)</span>
+                </div>
+            </div>
+
+            <!-- SECTION INVERSIONES -->
+            <div class="bg-slate-800/40 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <!-- Header -->
+                    <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-700/50">
+                        <div class="flex items-center space-x-3">
+                            <div class="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                                <i data-lucide="piggy-bank" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-lg font-bold text-white">Tus Inversiones</h2>
+                                <p class="text-xs text-slate-400">Activos e instrumentos de rendimiento anual</p>
+                            </div>
+                        </div>
+                        <button onclick="openInvestModal()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold transition shadow-lg shadow-emerald-600/20 flex items-center gap-1">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Agregar
+                        </button>
+                    </div>
+
+                    <!-- List Container -->
+                    <div id="investmentsList" class="space-y-3 max-h-[360px] overflow-y-auto pr-1">
+                        <!-- Dynamic Investments Rendered Here -->
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-800 text-xs text-slate-500 flex justify-between items-center">
+                    <span>* Rendimiento estimado bruto anual nominal</span>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Visual Analytics Dashboard Section -->
+        <section class="bg-slate-800/40 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-700/50">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="bar-chart-3" class="w-5 h-5 text-indigo-400"></i>
+                        Comparativa Visual y Distribución
+                    </h2>
+                    <p class="text-xs text-slate-400">Comparación cuantitativa entre costos anuales y ganancias estimadas</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <!-- Bar Chart -->
+                <div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 text-center">
+                        Monto Capital vs. Flujo Financiero Anual ($)
+                    </h3>
+                    <div class="relative h-64">
+                        <canvas id="financialBarChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Rates Comparison Gauge / Chart -->
+                <div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 text-center">
+                        Diferencial de Tasas Ponderadas (%)
+                    </h3>
+                    <div class="relative h-56 flex items-center justify-center">
+                        <canvas id="ratesDoughnutChart"></canvas>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                            <span class="text-xs text-slate-400 font-medium">Margen Neto</span>
+                            <span id="rateMarginText" class="text-xl font-extrabold text-white">0%</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-center pt-2 text-xs border-t border-slate-800/80 mt-2">
+                        <div class="p-2 rounded-lg bg-rose-500/5 border border-rose-500/10">
+                            <span class="block text-slate-400">Tasa Deuda Ponderada</span>
+                            <span class="font-bold text-rose-400 text-sm" id="rateDebtVal">0%</span>
+                        </div>
+                        <div class="p-2 rounded-lg bg-emerald-500/5 border border-emerald-500/10">
+                            <span class="block text-slate-400">Tasa Inversión Ponderada</span>
+                            <span class="font-bold text-emerald-400 text-sm" id="rateInvestVal">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE: Smart Recommendations & Action Plan -->
+        <section id="recommendations" class="bg-slate-800/40 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+            <div class="flex items-center space-x-3 pb-4 border-b border-slate-700/50">
+                <div class="p-3 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
+                    <i data-lucide="brain-circuit" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white">Módulo de Recomendaciones Inteligentes</h2>
+                    <p class="text-xs text-slate-400">Estrategia financiera recomendada según la regla matemática del costo de oportunidad</p>
+                </div>
+            </div>
+
+            <!-- Dynamic Recommendation Alert Box -->
+            <div id="recommendationAlertBox" class="rounded-2xl p-6 border transition-all duration-300">
+                <!-- Content generated dynamically -->
+            </div>
+
+            <!-- Detailed Action Plan Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+                
+                <!-- Strategy 1: Priority Attack -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="p-1.5 rounded-lg bg-rose-500/20 text-rose-400">
+                                <i data-lucide="zap" class="w-4 h-4"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-sm">Método Avalancha (Sugerido)</h3>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                            Ordena tus deudas de **mayor a menor CAT**. Matemáticamente liquida primero la de mayor tasa para detener la fuga más grande de dinero.
+                        </p>
+                        <div id="avalancheDebtList" class="space-y-2">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategy 2: Liquidity & Emergency Fund -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="p-1.5 rounded-lg bg-indigo-500/20 text-indigo-400">
+                                <i data-lucide="shield-alert" class="w-4 h-4"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-sm">Regla de Liquidez Mínima</h3>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            No utilices el 100% de tus inversiones para pagar deudas si eso destruye tu **Fondo de Emergencia** (de 3 a 6 meses de gastos). 
+                        </p>
+                        <div class="mt-4 p-3 rounded-xl bg-slate-800/80 border border-slate-700/50 text-xs text-slate-300">
+                            <span class="font-semibold text-indigo-400 block mb-1">💡 Consejo clave:</span>
+                            Aplica tus rendimientos generados o liquida únicamente instrumentos excedentes que rindan menos que el CAT de tus deudas.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategy 3: Interest Arbitrage -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400">
+                                <i data-lucide="coins" class="w-4 h-4"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-sm">Deudas Inteligentes / MSI</h3>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Si posees deudas con **CAT 0%** (como Meses Sin Intereses), **no las liquide anticipadamente**. 
+                        </p>
+                        <div class="mt-4 p-3 rounded-xl bg-slate-800/80 border border-slate-700/50 text-xs text-slate-300">
+                            <span class="font-semibold text-emerald-400 block mb-1">📈 Arbitraje Financiero:</span>
+                            Mantén ese dinero invirtiendo en tasa fija (ej. CETES/Pagaré) mientras pagas únicamente la mensualidad requerida. Ganarás dinero sobre el saldo diferido.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 py-6 bg-slate-950/80 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 space-y-1">
+            <p>Herramienta educativa de planificación financiera personal. Los rendimientos e impuestos reales pueden variar.</p>
+            <p>© Optimizador Deudas vs Inversiones - Diseñado para una toma de decisiones informada.</p>
+        </div>
+    </footer>
+
+    <!-- MODAL: AGREGAR/EDITAR DEUDA -->
+    <div id="debtModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-800">
+                <h3 id="debtModalTitle" class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="plus-circle" class="w-5 h-5 text-rose-500"></i> Agregar Deuda
+                </h3>
+                <button onclick="closeDebtModal()" class="text-slate-400 hover:text-white transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <form id="debtForm" onsubmit="saveDebt(event)" class="space-y-4">
+                <input type="hidden" id="debtId">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nombre o Concepto</label>
+                    <input type="text" id="debtName" required placeholder="ej. Tarjeta de Crédito BBA" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Monto Actual ($)</label>
+                    <input type="number" id="debtAmount" step="0.01" min="1" required placeholder="ej. 45000" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">CAT Anual (% Costo Anual Total)</label>
+                    <input type="number" id="debtCat" step="0.1" min="0" required placeholder="ej. 68.5" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500">
+                    <p class="text-[11px] text-slate-500 mt-1">Ingresa 0 si es una compra a Meses Sin Intereses.</p>
+                </div>
+                
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeDebtModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-semibold transition shadow-lg shadow-rose-600/20">
+                        Guardar Deuda
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: AGREGAR/EDITAR INVERSIÓN -->
+    <div id="investModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-800">
+                <h3 id="investModalTitle" class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="plus-circle" class="w-5 h-5 text-emerald-500"></i> Agregar Inversión
+                </h3>
+                <button onclick="closeInvestModal()" class="text-slate-400 hover:text-white transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <form id="investForm" onsubmit="saveInvestment(event)" class="space-y-4">
+                <input type="hidden" id="investId">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nombre del Instrumento</label>
+                    <input type="text" id="investName" required placeholder="ej. Cetes 28 Días / Nu Sofipo" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Monto Invertido ($)</label>
+                    <input type="number" id="investAmount" step="0.01" min="1" required placeholder="ej. 60000" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Rendimiento Estimado Anual (%)</label>
+                    <input type="number" id="investRate" step="0.1" min="0" required placeholder="ej. 11.2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeInvestModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold transition shadow-lg shadow-emerald-600/20">
+                        Guardar Inversión
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Initial Default Financial Data
+        const DEFAULT_DEBTS = [
+            { id: 'd1', name: 'Tarjeta de Crédito Oro', amount: 35000, cat: 62.5 },
+            { id: 'd2', name: 'Préstamo Personal Banco', amount: 50000, cat: 28.0 },
+            { id: 'd3', name: 'Laptop a Meses Sin Intereses (MSI)', amount: 15000, cat: 0.0 }
+        ];
+
+        const DEFAULT_INVESTMENTS = [
+            { id: 'i1', name: 'Cetes Directo (1 Año)', amount: 40000, rate: 11.0 },
+            { id: 'i2', name: 'Cuenta Crecimiento Sofipo', amount: 25000, rate: 13.5 },
+            { id: 'i3', name: 'Fondo Indizado ETF (S&P500)', amount: 20000, rate: 9.5 }
+        ];
+
+        // State variables
+        let debts = [...DEFAULT_DEBTS];
+        let investments = [...DEFAULT_INVESTMENTS];
+
+        // Chart Instances
+        let barChart = null;
+        let doughnutChart = null;
+
+        // Initialize App on DOM Loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initLucide();
+            initCharts();
+            updateUI();
+        });
+
+        function initLucide() {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+
+        // Format Currency Helper
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('es-MX', {
+                style: 'currency',
+                currency: 'MXN',
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        // Format Percent Helper
+        function formatPercent(value) {
+            return (value || 0).toFixed(1) + '%';
+        }
+
+        // Reset to Default Sample Data
+        function resetToDefaults() {
+            debts = JSON.parse(JSON.stringify(DEFAULT_DEBTS));
+            investments = JSON.parse(JSON.stringify(DEFAULT_INVESTMENTS));
+            updateUI();
+        }
+
+        // --- DEBT MANAGEMENT FUNCTIONS ---
+        function openDebtModal(id = null) {
+            const modal = document.getElementById('debtModal');
+            const title = document.getElementById('debtModalTitle');
+            document.getElementById('debtForm').reset();
+            document.getElementById('debtId').value = '';
+
+            if (id) {
+                const debt = debts.find(d => d.id === id);
+                if (debt) {
+                    title.innerHTML = `<i data-lucide="edit" class="w-5 h-5 text-rose-500"></i> Editar Deuda`;
+                    document.getElementById('debtId').value = debt.id;
+                    document.getElementById('debtName').value = debt.name;
+                    document.getElementById('debtAmount').value = debt.amount;
+                    document.getElementById('debtCat').value = debt.cat;
+                }
+            } else {
+                title.innerHTML = `<i data-lucide="plus-circle" class="w-5 h-5 text-rose-500"></i> Agregar Deuda`;
+            }
+            
+            modal.classList.remove('hidden');
+            initLucide();
+        }
+
+        function closeDebtModal() {
+            document.getElementById('debtModal').classList.add('hidden');
+        }
+
+        function saveDebt(e) {
+            e.preventDefault();
+            const id = document.getElementById('debtId').value;
+            const name = document.getElementById('debtName').value.trim();
+            const amount = parseFloat(document.getElementById('debtAmount').value);
+            const cat = parseFloat(document.getElementById('debtCat').value);
+
+            if (!name || isNaN(amount) || isNaN(cat)) return;
+
+            if (id) {
+                const index = debts.findIndex(d => d.id === id);
+                if (index !== -1) {
+                    debts[index] = { id, name, amount, cat };
+                }
+            } else {
+                debts.push({
+                    id: 'd_' + Date.now(),
+                    name,
+                    amount,
+                    cat
+                });
+            }
+
+            closeDebtModal();
+            updateUI();
+        }
+
+        function deleteDebt(id) {
+            debts = debts.filter(d => d.id !== id);
+            updateUI();
+        }
+
+        // --- INVESTMENT MANAGEMENT FUNCTIONS ---
+        function openInvestModal(id = null) {
+            const modal = document.getElementById('investModal');
+            const title = document.getElementById('investModalTitle');
+            document.getElementById('investForm').reset();
+            document.getElementById('investId').value = '';
+
+            if (id) {
+                const invest = investments.find(i => i.id === id);
+                if (invest) {
+                    title.innerHTML = `<i data-lucide="edit" class="w-5 h-5 text-emerald-500"></i> Editar Inversión`;
+                    document.getElementById('investId').value = invest.id;
+                    document.getElementById('investName').value = invest.name;
+                    document.getElementById('investAmount').value = invest.amount;
+                    document.getElementById('investRate').value = invest.rate;
+                }
+            } else {
+                title.innerHTML = `<i data-lucide="plus-circle" class="w-5 h-5 text-emerald-500"></i> Agregar Inversión`;
+            }
+
+            modal.classList.remove('hidden');
+            initLucide();
+        }
+
+        function closeInvestModal() {
+            document.getElementById('investModal').classList.add('hidden');
+        }
+
+        function saveInvestment(e) {
+            e.preventDefault();
+            const id = document.getElementById('investId').value;
+            const name = document.getElementById('investName').value.trim();
+            const amount = parseFloat(document.getElementById('investAmount').value);
+            const rate = parseFloat(document.getElementById('investRate').value);
+
+            if (!name || isNaN(amount) || isNaN(rate)) return;
+
+            if (id) {
+                const index = investments.findIndex(i => i.id === id);
+                if (index !== -1) {
+                    investments[index] = { id, name, amount, rate };
+                }
+            } else {
+                investments.push({
+                    id: 'i_' + Date.now(),
+                    name,
+                    amount,
+                    rate
+                });
+            }
+
+            closeInvestModal();
+            updateUI();
+        }
+
+        function deleteInvestment(id) {
+            investments = investments.filter(i => i.id !== id);
+            updateUI();
+        }
+
+        // --- CALCULATION & UI UPDATE LOGIC ---
+        function calculateMetrics() {
+            // Totals
+            const totalDebt = debts.reduce((acc, d) => acc + d.amount, 0);
+            const totalInvest = investments.reduce((acc, i) => acc + i.amount, 0);
+
+            // Annual Cost and Earnings
+            const annualDebtCost = debts.reduce((acc, d) => acc + (d.amount * (d.cat / 100)), 0);
+            const annualInvestReturn = investments.reduce((acc, i) => acc + (i.amount * (i.rate / 100)), 0);
+
+            // Weighted Rates
+            const weightedCat = totalDebt > 0 ? (annualDebtCost / totalDebt) * 100 : 0;
+            const weightedReturn = totalInvest > 0 ? (annualInvestReturn / totalInvest) * 100 : 0;
+
+            // Net Annual Metrics
+            const netAnnualBalance = annualInvestReturn - annualDebtCost;
+            const rateSpread = weightedReturn - weightedCat;
+
+            return {
+                totalDebt,
+                totalInvest,
+                annualDebtCost,
+                annualInvestReturn,
+                weightedCat,
+                weightedReturn,
+                netAnnualBalance,
+                rateSpread
+            };
+        }
+
+        function updateUI() {
+            const metrics = calculateMetrics();
+
+            // 1. Render Lists
+            renderDebtsList();
+            renderInvestmentsList();
+
+            // 2. Render Top Cards
+            document.getElementById('totalDebtAmount').textContent = formatMoney(metrics.totalDebt);
+            document.getElementById('totalDebtCost').textContent = `${formatMoney(metrics.annualDebtCost)}/año`;
+            document.getElementById('weightedCatBadge').textContent = `CAT Pond: ${formatPercent(metrics.weightedCat)}`;
+
+            document.getElementById('totalInvestAmount').textContent = formatMoney(metrics.totalInvest);
+            document.getElementById('totalInvestReturn').textContent = `${formatMoney(metrics.annualInvestReturn)}/año`;
+            document.getElementById('weightedReturnBadge').textContent = `Rend. Pond: ${formatPercent(metrics.weightedReturn)}`;
+
+            // 3. Render Net Balance Card with Dynamic Color Styling
+            const netCard = document.getElementById('netBalanceCard');
+            const netAmountEl = document.getElementById('netBalanceAmount');
+            const netStatusLabel = document.getElementById('netStatusLabel');
+            const netSpreadBadge = document.getElementById('netSpreadBadge');
+
+            netSpreadBadge.textContent = `Dif. Tasa: ${metrics.rateSpread > 0 ? '+' : ''}${formatPercent(metrics.rateSpread)}`;
+
+            if (metrics.netAnnualBalance > 0) {
+                netCard.className = "bg-emerald-950/40 border border-emerald-600/40 rounded-2xl p-5 relative overflow-hidden backdrop-blur-sm shadow-xl transition-all";
+                netAmountEl.className = "text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-400";
+                netAmountEl.textContent = `+${formatMoney(metrics.netAnnualBalance)}/año`;
+                netStatusLabel.textContent = "Superávit Financiero";
+                netStatusLabel.className = "font-bold text-emerald-400";
+            } else if (metrics.netAnnualBalance < 0) {
+                netCard.className = "bg-rose-950/40 border border-rose-600/40 rounded-2xl p-5 relative overflow-hidden backdrop-blur-sm shadow-xl transition-all";
+                netAmountEl.className = "text-2xl sm:text-3xl font-extrabold tracking-tight text-rose-400";
+                netAmountEl.textContent = `${formatMoney(metrics.netAnnualBalance)}/año`;
+                netStatusLabel.textContent = "Déficit / Pérdida Neta";
+                netStatusLabel.className = "font-bold text-rose-400";
+            } else {
+                netCard.className = "bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5 relative overflow-hidden backdrop-blur-sm shadow-xl transition-all";
+                netAmountEl.className = "text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-200";
+                netAmountEl.textContent = "$0/año";
+                netStatusLabel.textContent = "Equilibrado";
+                netStatusLabel.className = "font-bold text-slate-300";
+            }
+
+            // 4. Rate gauges texts
+            document.getElementById('rateDebtVal').textContent = formatPercent(metrics.weightedCat);
+            document.getElementById('rateInvestVal').textContent = formatPercent(metrics.weightedReturn);
+            document.getElementById('rateMarginText').textContent = `${metrics.rateSpread > 0 ? '+' : ''}${formatPercent(metrics.rateSpread)}`;
+
+            // 5. Update Charts
+            updateCharts(metrics);
+
+            // 6. Generate Recommendations & Avalanche list
+            generateRecommendations(metrics);
+
+            // Re-init lucide icons
+            initLucide();
+        }
+
+        function renderDebtsList() {
+            const container = document.getElementById('debtsList');
+            if (debts.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-slate-500 border border-dashed border-slate-800 rounded-2xl">
+                        <i data-lucide="check-circle-2" class="w-8 h-8 mx-auto mb-2 text-emerald-500/50"></i>
+                        <p class="text-xs">¡Excelente! No tienes deudas registradas.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = debts.map(debt => `
+                <div class="bg-slate-900/70 border border-slate-800 hover:border-slate-700 rounded-2xl p-3.5 flex items-center justify-between transition group">
+                    <div class="space-y-0.5">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-sm text-white">${escapeHtml(debt.name)}</span>
+                            ${debt.cat === 0 ? '<span class="text-[10px] bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-2 py-0.5 rounded-full font-semibold">MSI (0%)</span>' : ''}
+                        </div>
+                        <div class="text-xs text-slate-400 flex items-center gap-3">
+                            <span>Monto: <strong class="text-slate-200">${formatMoney(debt.amount)}</strong></span>
+                            <span>CAT: <strong class="${debt.cat > 30 ? 'text-rose-400' : 'text-slate-300'}">${formatPercent(debt.cat)}</strong></span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1 opacity-90 sm:opacity-40 group-hover:opacity-100 transition">
+                        <button onclick="openDebtModal('${debt.id}')" class="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition" title="Editar">
+                            <i data-lucide="pencil" class="w-4 h-4"></i>
+                        </button>
+                        <button onclick="deleteDebt('${debt.id}')" class="p-1.5 hover:bg-rose-500/10 rounded-lg text-slate-400 hover:text-rose-400 transition" title="Eliminar">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderInvestmentsList() {
+            const container = document.getElementById('investmentsList');
+            if (investments.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-slate-500 border border-dashed border-slate-800 rounded-2xl">
+                        <i data-lucide="alert-circle" class="w-8 h-8 mx-auto mb-2 text-slate-600"></i>
+                        <p class="text-xs">No has agregado inversiones aún.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = investments.map(inv => `
+                <div class="bg-slate-900/70 border border-slate-800 hover:border-slate-700 rounded-2xl p-3.5 flex items-center justify-between transition group">
+                    <div class="space-y-0.5">
+                        <span class="font-bold text-sm text-white block">${escapeHtml(inv.name)}</span>
+                        <div class="text-xs text-slate-400 flex items-center gap-3">
+                            <span>Monto: <strong class="text-slate-200">${formatMoney(inv.amount)}</strong></span>
+                            <span>Rendimiento: <strong class="text-emerald-400">${formatPercent(inv.rate)}</strong></span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1 opacity-90 sm:opacity-40 group-hover:opacity-100 transition">
+                        <button onclick="openInvestModal('${inv.id}')" class="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition" title="Editar">
+                            <i data-lucide="pencil" class="w-4 h-4"></i>
+                        </button>
+                        <button onclick="deleteInvestment('${inv.id}')" class="p-1.5 hover:bg-rose-500/10 rounded-lg text-slate-400 hover:text-rose-400 transition" title="Eliminar">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- CHARTS CONFIGURATION ---
+        function initCharts() {
+            // Bar Chart Context
+            const ctxBar = document.getElementById('financialBarChart').getContext('2d');
+            barChart = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: ['Monto Capital ($)', 'Flujo Anual ($)'],
+                    datasets: [
+                        {
+                            label: 'Deudas (Costo)',
+                            data: [0, 0],
+                            backgroundColor: '#ef4444',
+                            borderRadius: 8,
+                        },
+                        {
+                            label: 'Inversiones (Ganancia)',
+                            data: [0, 0],
+                            backgroundColor: '#22c55e',
+                            borderRadius: 8,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 11 } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${formatMoney(context.raw)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(51, 65, 85, 0.3)' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        y: {
+                            grid: { color: 'rgba(51, 65, 85, 0.3)' },
+                            ticks: {
+                                color: '#94a3b8',
+                                callback: value => '$' + value.toLocaleString()
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Doughnut / Rate Comparison Chart
+            const ctxDoughnut = document.getElementById('ratesDoughnutChart').getContext('2d');
+            doughnutChart = new Chart(ctxDoughnut, {
+                type: 'doughnut',
+                data: {
+                    labels: ['CAT Deudas (%)', 'Rendimiento Inversión (%)'],
+                    datasets: [{
+                        data: [50, 50],
+                        backgroundColor: ['#ef4444', '#22c55e'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw.toFixed(1)}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateCharts(metrics) {
+            if (!barChart || !doughnutChart) return;
+
+            // Update Bar Chart
+            barChart.data.datasets[0].data = [metrics.totalDebt, metrics.annualDebtCost];
+            barChart.data.datasets[1].data = [metrics.totalInvest, metrics.annualInvestReturn];
+            barChart.update();
+
+            // Update Doughnut Chart (Rates comparison)
+            const cat = metrics.weightedCat || 0;
+            const ret = metrics.weightedReturn || 0;
+            doughnutChart.data.datasets[0].data = [cat, ret];
+            doughnutChart.update();
+        }
+
+        // --- SMART RECOMMENDATIONS GENERATOR ---
+        function generateRecommendations(metrics) {
+            const alertBox = document.getElementById('recommendationAlertBox');
+            const priorityBadge = document.getElementById('priorityBadge');
+            const quickSummaryText = document.getElementById('quickSummaryText');
+            const avalancheContainer = document.getElementById('avalancheDebtList');
+
+            // Find debts with CAT higher than best investment
+            const maxInvestRate = investments.reduce((max, i) => i.rate > max ? i.rate : max, 0);
+            const highCostDebts = debts.filter(d => d.cat > maxInvestRate);
+
+            // Sort debts by CAT descending for Avalanche strategy
+            const sortedDebts = [...debts].sort((a, b) => b.cat - a.cat);
+
+            // Populate Avalanche list
+            if (sortedDebts.length > 0) {
+                avalancheContainer.innerHTML = sortedDebts.map((d, index) => `
+                    <div class="flex items-center justify-between p-2.5 bg-slate-800/60 rounded-xl border border-slate-700/50 text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-rose-500/20 text-rose-400 font-bold flex items-center justify-center text-[10px]">
+                                #${index + 1}
+                            </span>
+                            <span class="font-semibold text-slate-200">${escapeHtml(d.name)}</span>
+                        </div>
+                        <span class="font-bold text-rose-400">${formatPercent(d.cat)} CAT</span>
+                    </div>
+                `).join('');
+            } else {
+                avalancheContainer.innerHTML = `<p class="text-xs text-slate-500 italic">No hay pasivos registrados.</p>`;
+            }
+
+            // Case 1: High CAT Debts Exist (Destructive Arbitrage)
+            if (highCostDebts.length > 0) {
+                priorityBadge.className = "text-xs font-bold px-2 py-0.5 rounded uppercase bg-rose-500/20 text-rose-400 border border-rose-500/30";
+                priorityBadge.textContent = "Prioridad Alta";
+
+                quickSummaryText.textContent = `Tienes ${highCostDebts.length} deuda(s) con un CAT mayor a tus mejores inversiones (${formatPercent(maxInvestRate)}). Estás perdiendo dinero netamente.`;
+
+                alertBox.className = "rounded-2xl p-6 bg-rose-950/30 border border-rose-500/40 text-rose-200 space-y-3";
+                alertBox.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <div class="p-2 rounded-xl bg-rose-500/20 text-rose-400 shrink-0">
+                            <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <h3 class="text-base font-bold text-white flex items-center gap-2">
+                                Accion Recomendada: Liquida deudas con CAT alto inmediatamente
+                            </h3>
+                            <p class="text-xs leading-relaxed text-slate-300">
+                                Tu costo ponderado por deuda es de <strong>${formatPercent(metrics.weightedCat)}</strong> mientras que tus inversiones rinden <strong>${formatPercent(metrics.weightedReturn)}</strong>.
+                                Matemáticamente, pagar $1,000 de una deuda con CAT del 60% te da un "rendimiento garantizado" del 60%, superando cualquier inversión sin riesgo del mercado.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="pt-2 border-t border-rose-500/20 flex flex-wrap gap-4 text-xs font-semibold text-rose-300">
+                        <span class="flex items-center gap-1">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-rose-400"></i> Pausa nuevas inversiones ordinarias
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-rose-400"></i> Amortiza en orden del método Avalancha
+                        </span>
+                    </div>
+                `;
+            } 
+            // Case 2: Investments beating Debts (Positive Arbitrage or Zero Interest)
+            else if (metrics.rateSpread > 0 || (debts.length > 0 && metrics.weightedCat < metrics.weightedReturn)) {
+                priorityBadge.className = "text-xs font-bold px-2 py-0.5 rounded uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+                priorityBadge.textContent = "Optimizada";
+
+                quickSummaryText.textContent = `Tus inversiones rinden un ${formatPercent(metrics.weightedReturn)}, superando la tasa de tus deudas (${formatPercent(metrics.weightedCat)}). Tu estrategia genera un saldo positivo.`;
+
+                alertBox.className = "rounded-2xl p-6 bg-emerald-950/30 border border-emerald-500/40 text-emerald-200 space-y-3";
+                alertBox.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <div class="p-2 rounded-xl bg-emerald-500/20 text-emerald-400 shrink-0">
+                            <i data-lucide="trending-up" class="w-6 h-6"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <h3 class="text-base font-bold text-white flex items-center gap-2">
+                                Excelente Estrategia: Mantén tus Inversiones y paga a tiempo
+                            </h3>
+                            <p class="text-xs leading-relaxed text-slate-300">
+                                El rendimiento ponderado de tus inversiones (<strong>${formatPercent(metrics.weightedReturn)}</strong>) supera el costo financiero de tus deudas (<strong>${formatPercent(metrics.weightedCat)}</strong>). Generas un diferencial neto estimado de <strong>+${formatMoney(metrics.netAnnualBalance)} al año</strong>.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="pt-2 border-t border-emerald-500/20 flex flex-wrap gap-4 text-xs font-semibold text-emerald-300">
+                        <span class="flex items-center gap-1">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> Mantén la liquidez de tu capital
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> Cumple con los pagos mínimos/mensuales
+                        </span>
+                    </div>
+                `;
+            } 
+            // Case 3: Balanced or Neutral
+            else {
+                priorityBadge.className = "text-xs font-bold px-2 py-0.5 rounded uppercase bg-amber-500/20 text-amber-400 border border-amber-500/30";
+                priorityBadge.textContent = "Prioridad Media";
+
+                quickSummaryText.textContent = `El costo de tus deudas y el rendimiento de tus inversiones están muy parejos. Es momento de simplificar e ir liberando pasivos.`;
+
+                alertBox.className = "rounded-2xl p-6 bg-amber-950/30 border border-amber-500/40 text-amber-200 space-y-3";
+                alertBox.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <div class="p-2 rounded-xl bg-amber-500/20 text-amber-400 shrink-0">
+                            <i data-lucide="scale" class="w-6 h-6"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <h3 class="text-base font-bold text-white flex items-center gap-2">
+                                Estado Neutro: Recomienda simplificar pasivos
+                            </h3>
+                            <p class="text-xs leading-relaxed text-slate-300">
+                                Tus costos e ingresos financieros anuales son similares. Se aconseja consolidar deudas o amortizar gradualmente para disminuir tu nivel de riesgo financiero personal.
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Helper XSS prevention
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>

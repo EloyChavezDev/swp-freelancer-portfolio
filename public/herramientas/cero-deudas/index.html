@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrategia Bola de Nieve - Sal de Deudas</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                            950: '#172554',
+                        },
+                        dark: {
+                            800: '#1e293b',
+                            850: '#172033',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* Dark glow elements */
+        .glow-blue {
+            box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.25);
+        }
+
+        /* Estilos optimizados para impresión / PDF (Mantiene fondo claro para ahorro de tinta al imprimir) */
+        @media print {
+            @page {
+                size: letter portrait;
+                margin: 1.2cm;
+            }
+            body {
+                background: white !important;
+                color: #0f172a !important;
+                font-size: 11pt;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            .bg-slate-900, .glass-panel, .glass-card, .bg-slate-950, .bg-slate-800 {
+                background: white !important;
+                border: 1px solid #cbd5e1 !important;
+                box-shadow: none !important;
+                color: black !important;
+            }
+            .text-white, .text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400 {
+                color: #0f172a !important;
+            }
+            canvas {
+                max-height: 280px !important;
+                width: 100% !important;
+            }
+            .page-break-inside-avoid {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="h-full text-slate-100 bg-slate-950 flex flex-col justify-between selection:bg-cyan-500 selection:text-slate-950">
+
+    <!-- Encabezado / Navbar -->
+    <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 text-white shadow-xl no-print sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="p-2.5 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl border border-cyan-500/30 shadow-lg shadow-cyan-500/10">
+                    <i data-lucide="snowflake" class="w-7 h-7 text-cyan-400"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-cyan-400 bg-clip-text text-transparent">
+                        CeroDeudas <span class="text-xs px-2.5 py-0.5 bg-cyan-500/10 text-cyan-400 rounded-full border border-cyan-500/30 font-medium">Bola de Nieve</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Planificador estratégico de libertad financiera</p>
+                </div>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-2.5">
+                <button type="button" onclick="cargarEjemplo()" class="px-3.5 py-2 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl transition border border-slate-700/80 flex items-center gap-1.5 cursor-pointer shadow-sm">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i> Cargar Ejemplo
+                </button>
+                <button type="button" onclick="reiniciarTodo()" class="px-3.5 py-2 text-xs font-medium bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 rounded-xl transition border border-rose-800/40 flex items-center gap-1.5 cursor-pointer">
+                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reiniciar
+                </button>
+                <button type="button" onclick="ejecutarImpresion()" class="px-3.5 py-2 text-xs font-semibold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl transition shadow-lg shadow-emerald-950/50 flex items-center gap-1.5 cursor-pointer border border-emerald-400/30">
+                    <i data-lucide="printer" class="w-3.5 h-3.5"></i> Imprimir / PDF
+                </button>
+                <a href="/" class="px-3.5 py-2 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl transition border border-slate-700/80 flex items-center gap-1.5 cursor-pointer shadow-sm">
+                    <i data-lucide="arrow-left" class="w-3.5 h-3.5 text-cyan-400"></i> Regresar al sitio
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Encabezado Visible Solo al Imprimir -->
+    <div class="hidden print-only mb-6 border-b border-slate-300 pb-4">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900">Reporte de Plan de Pago de Deudas</h1>
+                <p class="text-xs text-slate-600 mt-1" id="printSubtituloEstrategia">Estrategia: Bola de Nieve</p>
+            </div>
+            <div class="text-right text-xs text-slate-500">
+                <p>Generado con CeroDeudas</p>
+                <p id="printFechaGeneracion"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full space-y-8">
+
+        <!-- Banner Explicativo Cierre / Motivacional -->
+        <div class="glass-panel rounded-2xl p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 no-print shadow-2xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="flex items-start gap-4 z-10">
+                <div class="p-3 bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-xl shadow-lg shadow-blue-600/30 border border-blue-400/30 shrink-0">
+                    <i data-lucide="compass" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h2 class="text-base font-bold text-white flex items-center gap-2">
+                        ¿Cómo funciona esta estrategia?
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1 leading-relaxed">
+                        Registra tu presupuesto libre y tus deudas. La <strong class="text-cyan-400 font-semibold">Bola de Nieve</strong> ataca primero la deuda de menor saldo para victorias rápidas que impulsan tu motivación. Puedes comparar con el método <strong class="text-indigo-400 font-semibold">Avalancha</strong> (mayor CAT).
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Selector de Estrategia -->
+            <div class="bg-slate-900/90 p-1.5 rounded-xl border border-slate-800 flex items-center gap-1.5 shrink-0 self-stretch md:self-auto z-10">
+                <button id="btnSnowball" type="button" onclick="setEstrategia('snowball')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md shadow-blue-900/40 border border-cyan-400/30">
+                    <i data-lucide="snowflake" class="w-4 h-4"></i> Bola de Nieve
+                </button>
+                <button id="btnAvalanche" type="button" onclick="setEstrategia('avalanche')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
+                    <i data-lucide="mountain" class="w-4 h-4"></i> Avalancha (CAT)
+                </button>
+            </div>
+        </div>
+
+        <!-- Grid Superior: Formulario de Presupuesto y Registro de Deudas -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 no-print">
+            
+            <!-- PASO 1: Capacidad de Pago / Ingresos y Gastos -->
+            <div class="lg:col-span-4 glass-panel rounded-2xl p-6 flex flex-col justify-between shadow-xl">
+                <div>
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-5">
+                        <div class="flex items-center space-x-2.5">
+                            <span class="w-7 h-7 bg-blue-500/10 text-cyan-400 border border-cyan-500/20 rounded-lg flex items-center justify-center text-xs font-bold">1</span>
+                            <h3 class="text-base font-bold text-slate-100">Capacidad de Pago</h3>
+                        </div>
+                        <i data-lucide="wallet" class="w-5 h-5 text-slate-500"></i>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Ingresos Mensuales Totales ($)</label>
+                            <div class="relative rounded-xl shadow-inner">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">$</div>
+                                <input type="number" id="ingresosInput" oninput="calcularPresupuesto()" placeholder="0.00" min="0" step="100" class="w-full pl-8 pr-4 py-2.5 text-sm rounded-xl bg-slate-900/90 border border-slate-700/80 text-white placeholder-slate-600 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Gastos Básicos e Indispensables ($)</label>
+                            <p class="text-[11px] text-slate-500 mb-1.5">Renta, despensa, servicios básicos, transporte esencial.</p>
+                            <div class="relative rounded-xl shadow-inner">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">$</div>
+                                <input type="number" id="gastosInput" oninput="calcularPresupuesto()" placeholder="0.00" min="0" step="100" class="w-full pl-8 pr-4 py-2.5 text-sm rounded-xl bg-slate-900/90 border border-slate-700/80 text-white placeholder-slate-600 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resumen de Flujo Libre -->
+                <div class="mt-6 pt-5 border-t border-slate-800">
+                    <div class="bg-slate-900/90 rounded-xl p-4 border border-slate-800 relative overflow-hidden">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-slate-400 font-medium">Flujo Libre Disponible:</span>
+                            <span id="flujoLibreBadge" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Positivo</span>
+                        </div>
+                        <div class="text-2xl font-black tracking-tight text-white" id="flujoLibreTxt">$0.00</div>
+                        <p class="text-[11px] text-slate-400 mt-2 leading-relaxed" id="flujoExplicacion">
+                            Este excedente se sumará a los pagos mínimos para acelerar tu bola de nieve.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 2: Registro e Inserción de Deudas -->
+            <div class="lg:col-span-8 glass-panel rounded-2xl p-6 shadow-xl">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-5">
+                    <div class="flex items-center space-x-2.5">
+                        <span class="w-7 h-7 bg-blue-500/10 text-cyan-400 border border-cyan-500/20 rounded-lg flex items-center justify-center text-xs font-bold">2</span>
+                        <h3 class="text-base font-bold text-slate-100">Mis Deudas Actuales</h3>
+                    </div>
+                    <span class="text-xs text-slate-400 font-medium" id="totalDeudasCount">0 deudas registradas</span>
+                </div>
+
+                <!-- Formulario Agregar Deuda -->
+                <form id="formDeuda" onsubmit="agregarDeuda(event)" class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 mb-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="sm:col-span-2 lg:col-span-1">
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Acreedor / Nombre</label>
+                            <input type="text" id="nombreDeuda" required placeholder="ej. Tarjeta Nu / Préstamo" class="w-full px-3 py-2 text-xs rounded-lg bg-slate-950 border border-slate-700/80 text-white placeholder-slate-600 focus:ring-2 focus:ring-cyan-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Saldo Total ($)</label>
+                            <input type="number" id="saldoDeuda" required min="1" step="0.01" placeholder="15000" class="w-full px-3 py-2 text-xs rounded-lg bg-slate-950 border border-slate-700/80 text-white placeholder-slate-600 focus:ring-2 focus:ring-cyan-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Pago Mínimo ($)</label>
+                            <input type="number" id="minimoDeuda" required min="1" step="0.01" placeholder="800" class="w-full px-3 py-2 text-xs rounded-lg bg-slate-950 border border-slate-700/80 text-white placeholder-slate-600 focus:ring-2 focus:ring-cyan-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">CAT Anual (%)</label>
+                            <input type="number" id="catDeuda" required min="0" step="0.1" placeholder="45.5" class="w-full px-3 py-2 text-xs rounded-lg bg-slate-950 border border-slate-700/80 text-white placeholder-slate-600 focus:ring-2 focus:ring-cyan-500 outline-none">
+                        </div>
+                    </div>
+                    <div class="mt-3 flex justify-end">
+                        <button type="submit" id="btnSubmitDeuda" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-md shadow-blue-950/50 cursor-pointer">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i> Agregar Deuda
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Tabla de Deudas -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                                <th class="pb-3 px-2">Deuda</th>
+                                <th class="pb-3 px-2">Saldo Total</th>
+                                <th class="pb-3 px-2">Pago Mínimo</th>
+                                <th class="pb-3 px-2">CAT %</th>
+                                <th class="pb-3 px-2 text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaDeudasBody" class="divide-y divide-slate-800/80 text-xs">
+                            <!-- Inserción dinámica de filas -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE RESULTADOS & IMPACTO VISUAL -->
+        <div id="seccionResultados" class="space-y-8">
+            
+            <!-- Dashboard KPIs -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <!-- KPI 1: Tiempo Total -->
+                <div class="glass-card p-5 rounded-2xl border border-slate-800 relative overflow-hidden shadow-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold text-slate-400">Tiempo para Libertad</span>
+                        <div class="p-2 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-xl">
+                            <i data-lucide="calendar" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="text-2xl font-black text-white" id="kpiTiempo">0 meses</div>
+                    <p class="text-[11px] text-slate-400 mt-1" id="kpiFechaFin">Fecha estimada: --</p>
+                    <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-cyan-400"></div>
+                </div>
+
+                <!-- KPI 2: Total Deuda Inicial -->
+                <div class="glass-card p-5 rounded-2xl border border-slate-800 relative overflow-hidden shadow-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold text-slate-400">Deuda Total Inicial</span>
+                        <div class="p-2 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-xl">
+                            <i data-lucide="trending-down" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="text-2xl font-black text-white" id="kpiDeudaTotal">$0.00</div>
+                    <p class="text-[11px] text-slate-400 mt-1" id="kpiSumaMinimos">Suma de mínimos: $0.00/mes</p>
+                    <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-rose-500 to-pink-500"></div>
+                </div>
+
+                <!-- KPI 3: Intereses Aproximados -->
+                <div class="glass-card p-5 rounded-2xl border border-slate-800 relative overflow-hidden shadow-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold text-slate-400">Intereses Totales Est.</span>
+                        <div class="p-2 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-xl">
+                            <i data-lucide="percent" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="text-2xl font-black text-white" id="kpiIntereses">$0.00</div>
+                    <p class="text-[11px] text-slate-400 mt-1">Basado en CAT ponderado</p>
+                    <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500"></div>
+                </div>
+
+                <!-- KPI 4: Acelerador Bola de Nieve -->
+                <div class="glass-card p-5 rounded-2xl border border-slate-800 relative overflow-hidden shadow-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold text-slate-400">Abono Mensual Inicial</span>
+                        <div class="p-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl">
+                            <i data-lucide="zap" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="text-2xl font-black text-emerald-400" id="kpiAbonoInicial">$0.00</div>
+                    <p class="text-[11px] text-slate-400 mt-1">Mínimos + Flujo Libre</p>
+                    <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Reducción de Deuda -->
+            <div class="glass-panel p-6 rounded-2xl shadow-xl">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 gap-2 mb-4">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i data-lucide="line-chart" class="w-5 h-5 text-cyan-400"></i> Proyección Descenso del Saldo Total
+                        </h3>
+                        <p class="text-xs text-slate-400">Evolución estimada de tus saldos mes a mes hasta llegar a $0</p>
+                    </div>
+                    <span id="badgeEstrategiaUsada" class="px-3 py-1 bg-blue-500/10 text-cyan-400 rounded-full text-xs font-bold border border-cyan-500/30 self-start sm:self-auto">
+                        Estrategia Bola de Nieve
+                    </span>
+                </div>
+                <div class="relative w-full h-72 sm:h-80">
+                    <canvas id="graficoAmortizacion"></canvas>
+                </div>
+            </div>
+
+            <!-- Plan de Acción Paso a Paso / Timeline -->
+            <div class="glass-panel p-6 rounded-2xl shadow-xl">
+                <div class="pb-4 border-b border-slate-800 mb-6">
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        <i data-lucide="list-ordered" class="w-5 h-5 text-cyan-400"></i> Orden Estratégico de Liquidación
+                    </h3>
+                    <p class="text-xs text-slate-400">Esta es la secuencia exacta en que tus deudas irán cayendo una a una.</p>
+                </div>
+
+                <div id="timelineDeudas" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Tarjetas de orden dinámicas -->
+                </div>
+            </div>
+
+            <!-- Tabla de Amortización Mensual Expandible -->
+            <div class="glass-panel rounded-2xl shadow-xl overflow-hidden page-break-inside-avoid">
+                <div class="p-6 border-b border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i data-lucide="table" class="w-5 h-5 text-cyan-400"></i> Calendario Detallado Mes a Mes
+                        </h3>
+                        <p class="text-xs text-slate-400">Monitorea el saldo restante de cada deuda en cada periodo.</p>
+                    </div>
+                    <button type="button" onclick="toggleTablaAmortizacion()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-semibold transition flex items-center gap-2 no-print cursor-pointer">
+                        <i data-lucide="eye" class="w-4 h-4"></i> <span id="lblToggleTabla">Mostrar Detalle</span>
+                    </button>
+                </div>
+
+                <div id="contenedorTablaAmortizacion" class="hidden overflow-x-auto p-4 bg-slate-900/60">
+                    <table class="w-full text-left text-xs">
+                        <thead id="headAmortizacion" class="text-[11px] font-bold text-slate-400 uppercase bg-slate-900 border-b border-slate-800">
+                            <!-- Dinámico -->
+                        </thead>
+                        <tbody id="bodyAmortizacion" class="divide-y divide-slate-800/80 bg-slate-950/40">
+                            <!-- Dinámico -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Modal Mensaje Motivacional -->
+    <div id="modalMotivacional" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50 no-print">
+        <div class="bg-slate-900 rounded-2xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl border border-slate-800">
+            <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/10">
+                <i data-lucide="sparkles" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-extrabold text-white">¡Ejemplo Cargado!</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+                Hemos cargado un conjunto de deudas y presupuestos de muestra. Observa cómo la bola de nieve elimina primero la deuda más pequeña para ganar impulso.
+            </p>
+            <button onclick="cerrarModal()" class="w-full py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow-lg shadow-blue-950/50">
+                Entendido, ver mi plan
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Estado Global
+        let deudas = [];
+        let ingresos = 0;
+        let gastos = 0;
+        let estrategia = 'snowball'; // 'snowball' (menor saldo) o 'avalanche' (mayor CAT)
+        let chartInstance = null;
+        let editandoIndex = null;
+
+        // Formateador de Moneda MXN
+        const fmtMXN = (val) => {
+            return new Intl.NumberFormat('es-MX', {
+                style: 'currency',
+                currency: 'MXN',
+                minimumFractionDigits: 2
+            }).format(val || 0);
+        };
+
+        // Función dedicada para Imprimir / PDF
+        function ejecutarImpresion() {
+            const fechaPrint = document.getElementById('printFechaGeneracion');
+            if (fechaPrint) {
+                fechaPrint.innerText = new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' });
+            }
+
+            const subtituloPrint = document.getElementById('printSubtituloEstrategia');
+            if (subtituloPrint) {
+                subtituloPrint.innerText = `Estrategia Seleccionada: ${estrategia === 'snowball' ? 'Bola de Nieve (Menor Saldo)' : 'Avalancha (Mayor CAT)'}`;
+            }
+
+            const contTabla = document.getElementById('contenedorTablaAmortizacion');
+            const estabaOculta = contTabla && contTabla.classList.contains('hidden');
+            if (estabaOculta) {
+                contTabla.classList.remove('hidden');
+            }
+
+            window.print();
+
+            if (estabaOculta) {
+                contTabla.classList.add('hidden');
+            }
+        }
+
+        // Guardar / Cargar en localStorage
+        function guardarLocalStorage() {
+            const data = { ingresos, gastos, deudas, estrategia };
+            localStorage.setItem('cerodeudas_data', JSON.stringify(data));
+        }
+
+        function cargarLocalStorage() {
+            const saved = localStorage.getItem('cerodeudas_data');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    ingresos = parsed.ingresos || 0;
+                    gastos = parsed.gastos || 0;
+                    deudas = parsed.deudas || [];
+                    estrategia = parsed.estrategia || 'snowball';
+
+                    document.getElementById('ingresosInput').value = ingresos || '';
+                    document.getElementById('gastosInput').value = gastos || '';
+                    actualizarBotonesEstrategia();
+                } catch(e) {
+                    console.error("Error al cargar localStorage", e);
+                }
+            }
+        }
+
+        function setEstrategia(tipo) {
+            estrategia = tipo;
+            actualizarBotonesEstrategia();
+            guardarLocalStorage();
+            calcularTodo();
+        }
+
+        function actualizarBotonesEstrategia() {
+            const btnSnowball = document.getElementById('btnSnowball');
+            const btnAvalanche = document.getElementById('btnAvalanche');
+
+            if (!btnSnowball || !btnAvalanche) return;
+
+            if (estrategia === 'snowball') {
+                btnSnowball.className = "flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md shadow-blue-900/40 border border-cyan-400/30";
+                btnAvalanche.className = "flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800";
+                document.getElementById('badgeEstrategiaUsada').innerText = "Estrategia Bola de Nieve (Menor Saldo)";
+            } else {
+                btnAvalanche.className = "flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-900/40 border border-indigo-400/30";
+                btnSnowball.className = "flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800";
+                document.getElementById('badgeEstrategiaUsada').innerText = "Estrategia Avalancha (Mayor CAT)";
+            }
+        }
+
+        function calcularPresupuesto() {
+            ingresos = parseFloat(document.getElementById('ingresosInput').value) || 0;
+            gastos = parseFloat(document.getElementById('gastosInput').value) || 0;
+            
+            const flujoLibre = ingresos - gastos;
+            const flujoTxt = document.getElementById('flujoLibreTxt');
+            const badge = document.getElementById('flujoLibreBadge');
+            const explicacion = document.getElementById('flujoExplicacion');
+
+            flujoTxt.innerText = fmtMXN(flujoLibre);
+
+            if (flujoLibre > 0) {
+                badge.innerText = "Disponible Extra";
+                badge.className = "text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+                explicacion.innerText = "Este flujo sobrante se inyectará como abono extra para liquidar la primera deuda más rápido.";
+            } else if (flujoLibre === 0) {
+                badge.innerText = "Equilibrado";
+                badge.className = "text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30";
+                explicacion.innerText = "No tienes excedente extra. El plan usará solo la redistribución de pagos mínimos al liquidar cada deuda.";
+            } else {
+                badge.innerText = "Déficit";
+                badge.className = "text-[10px] px-2 py-0.5 rounded-full font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30";
+                explicacion.innerText = "Tus gastos mínimos superan tus ingresos. Ajusta tus gastos básicos para liberar capacidad de abono.";
+            }
+
+            guardarLocalStorage();
+            calcularTodo();
+        }
+
+        function agregarDeuda(e) {
+            e.preventDefault();
+            const nombre = document.getElementById('nombreDeuda').value.trim();
+            const saldo = parseFloat(document.getElementById('saldoDeuda').value) || 0;
+            const minimo = parseFloat(document.getElementById('minimoDeuda').value) || 0;
+            const cat = parseFloat(document.getElementById('catDeuda').value) || 0;
+
+            if (!nombre || saldo <= 0 || minimo <= 0) return;
+
+            if (editandoIndex !== null) {
+                deudas[editandoIndex] = { id: deudas[editandoIndex].id, nombre, saldo, minimo, cat };
+                editandoIndex = null;
+                document.getElementById('btnSubmitDeuda').innerHTML = `<i data-lucide="plus-circle" class="w-4 h-4"></i> Agregar Deuda`;
+            } else {
+                deudas.push({
+                    id: Date.now(),
+                    nombre,
+                    saldo,
+                    minimo,
+                    cat
+                });
+            }
+
+            document.getElementById('formDeuda').reset();
+            lucide.createIcons();
+            guardarLocalStorage();
+            calcularTodo();
+        }
+
+        function editarDeuda(index) {
+            const d = deudas[index];
+            document.getElementById('nombreDeuda').value = d.nombre;
+            document.getElementById('saldoDeuda').value = d.saldo;
+            document.getElementById('minimoDeuda').value = d.minimo;
+            document.getElementById('catDeuda').value = d.cat;
+
+            editandoIndex = index;
+            document.getElementById('btnSubmitDeuda').innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Actualizar Deuda`;
+            lucide.createIcons();
+        }
+
+        function eliminarDeuda(index) {
+            deudas.splice(index, 1);
+            if (editandoIndex === index) {
+                editandoIndex = null;
+                document.getElementById('formDeuda').reset();
+                document.getElementById('btnSubmitDeuda').innerHTML = `<i data-lucide="plus-circle" class="w-4 h-4"></i> Agregar Deuda`;
+            }
+            guardarLocalStorage();
+            calcularTodo();
+        }
+
+        function renderTablaDeudas() {
+            const tbody = document.getElementById('tablaDeudasBody');
+            const countLbl = document.getElementById('totalDeudasCount');
+            tbody.innerHTML = '';
+
+            countLbl.innerText = `${deudas.length} deuda(s) registrada(s)`;
+
+            if (deudas.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="py-8 text-center text-slate-500">
+                            No hay deudas agregadas aún. Usa el formulario de arriba para agregar tus tarjetas o préstamos.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            deudas.forEach((d, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-900/50 transition border-b border-slate-800/80";
+                tr.innerHTML = `
+                    <td class="py-3 px-2 font-medium text-slate-100">${d.nombre}</td>
+                    <td class="py-3 px-2 text-slate-200 font-semibold">${fmtMXN(d.saldo)}</td>
+                    <td class="py-3 px-2 text-slate-400">${fmtMXN(d.minimo)}</td>
+                    <td class="py-3 px-2">
+                        <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-800 text-slate-300 border border-slate-700">
+                            ${d.cat}%
+                        </span>
+                    </td>
+                    <td class="py-3 px-2 text-right space-x-1">
+                        <button type="button" onclick="editarDeuda(${idx})" class="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-white rounded-lg transition" title="Editar">
+                            <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <button type="button" onclick="eliminarDeuda(${idx})" class="p-1.5 hover:bg-rose-950/50 text-rose-400 rounded-lg transition" title="Eliminar">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            lucide.createIcons();
+        }
+
+        function calcularTodo() {
+            renderTablaDeudas();
+
+            if (deudas.length === 0) {
+                document.getElementById('kpiTiempo').innerText = '0 meses';
+                document.getElementById('kpiFechaFin').innerText = 'Agrega al menos una deuda';
+                document.getElementById('kpiDeudaTotal').innerText = fmtMXN(0);
+                document.getElementById('kpiSumaMinimos').innerText = 'Suma de mínimos: $0.00/mes';
+                document.getElementById('kpiIntereses').innerText = fmtMXN(0);
+                document.getElementById('kpiAbonoInicial').innerText = fmtMXN(0);
+                document.getElementById('timelineDeudas').innerHTML = '<p class="text-slate-500 text-xs col-span-full">Sin datos para generar la secuencia de pago.</p>';
+                if (chartInstance) chartInstance.destroy();
+                return;
+            }
+
+            const flujoLibre = Math.max(0, ingresos - gastos);
+            const sumaMinimos = deudas.reduce((acc, d) => acc + d.minimo, 0);
+            const deudaTotalInicial = deudas.reduce((acc, d) => acc + d.saldo, 0);
+
+            let listaOrdenada = JSON.parse(JSON.stringify(deudas));
+            if (estrategia === 'snowball') {
+                listaOrdenada.sort((a, b) => a.saldo - b.saldo);
+            } else {
+                listaOrdenada.sort((a, b) => b.cat - a.cat);
+            }
+
+            let estadoSaldos = listaOrdenada.map(d => ({
+                id: d.id,
+                nombre: d.nombre,
+                saldo: d.saldo,
+                minimo: d.minimo,
+                cat: d.cat,
+                mesPagado: null
+            }));
+
+            let mes = 0;
+            const maxMeses = 360;
+            let historialTotales = [deudaTotalInicial];
+            let historialPorDeuda = [estadoSaldos.map(d => d.saldo)];
+            let mesesNombres = ['Inicio'];
+            let interesesTotalesEst = 0;
+
+            while (estadoSaldos.some(d => d.saldo > 0) && mes < maxMeses) {
+                mes++;
+
+                estadoSaldos.forEach(d => {
+                    if (d.saldo > 0) {
+                        const tasaMensual = (d.cat / 100) / 12;
+                        const interesMes = d.saldo * tasaMensual;
+                        interesesTotalesEst += interesMes;
+                        d.saldo += interesMes;
+                    }
+                });
+
+                let abonoDisponibleExtra = flujoLibre;
+
+                estadoSaldos.forEach(d => {
+                    if (d.saldo > 0) {
+                        let pagoMin = Math.min(d.saldo, d.minimo);
+                        d.saldo -= pagoMin;
+                    } else {
+                        abonoDisponibleExtra += d.minimo;
+                    }
+                });
+
+                for (let d of estadoSaldos) {
+                    if (d.saldo > 0) {
+                        let pagoExtra = Math.min(d.saldo, abonoDisponibleExtra);
+                        d.saldo -= pagoExtra;
+                        abonoDisponibleExtra -= pagoExtra;
+
+                        if (d.saldo <= 0 && d.mesPagado === null) {
+                            d.mesPagado = mes;
+                        }
+
+                        if (abonoDisponibleExtra <= 0) break;
+                    }
+                }
+
+                estadoSaldos.forEach(d => {
+                    if (d.saldo <= 0 && d.mesPagado === null) {
+                        d.mesPagado = mes;
+                    }
+                });
+
+                const sumaSaldoMes = estadoSaldos.reduce((acc, d) => acc + Math.max(0, d.saldo), 0);
+                historialTotales.push(Math.round(sumaSaldoMes));
+                historialPorDeuda.push(estadoSaldos.map(d => Math.max(0, d.saldo)));
+                mesesNombres.push(`Mes ${mes}`);
+            }
+
+            const mesesTotales = mes;
+            const abonoInicialTotal = sumaMinimos + flujoLibre;
+
+            const hoy = new Date();
+            hoy.setMonth(hoy.getMonth() + mesesTotales);
+            const opcionesFecha = { year: 'numeric', month: 'long' };
+            const fechaFinStr = hoy.toLocaleDateString('es-MX', opcionesFecha);
+
+            const anios = Math.floor(mesesTotales / 12);
+            const mesesRestantes = mesesTotales % 12;
+            let tiempoTexto = `${mesesTotales} meses`;
+            if (anios > 0) {
+                tiempoTexto = `${anios} año${anios > 1 ? 's' : ''} ${mesesRestantes > 0 ? `y ${mesesRestantes} m.` : ''}`;
+            }
+
+            document.getElementById('kpiTiempo').innerText = tiempoTexto;
+            document.getElementById('kpiFechaFin').innerText = `Fecha est: ${fechaFinStr}`;
+            document.getElementById('kpiDeudaTotal').innerText = fmtMXN(deudaTotalInicial);
+            document.getElementById('kpiSumaMinimos').innerText = `Suma mínimos: ${fmtMXN(sumaMinimos)}/mes`;
+            document.getElementById('kpiIntereses').innerText = fmtMXN(interesesTotalesEst);
+            document.getElementById('kpiAbonoInicial').innerText = fmtMXN(abonoInicialTotal);
+
+            renderGrafico(mesesNombres, historialTotales);
+            renderTimeline(estadoSaldos);
+            renderTablaAmortizacionDetallada(listaOrdenada, mesesNombres, historialPorDeuda);
+        }
+
+        function renderGrafico(labels, dataTotales) {
+            const canvas = document.getElementById('graficoAmortizacion');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            // Dark gradient styling for Chart
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(56, 189, 248, 0.35)');
+            gradient.addColorStop(1, 'rgba(15, 23, 42, 0.0)');
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Saldo Total Restante ($)',
+                        data: dataTotales,
+                        borderColor: '#38bdf8',
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.35,
+                        borderWidth: 3,
+                        pointRadius: labels.length > 50 ? 0 : 3,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#0284c7'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#38bdf8',
+                            borderColor: '#334155',
+                            borderWidth: 1,
+                            padding: 10,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return ` Saldo: ${fmtMXN(context.raw)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#94a3b8',
+                                callback: function(value) { return '$' + value.toLocaleString(); }
+                            },
+                            grid: { color: 'rgba(51, 65, 85, 0.4)' }
+                        },
+                        x: {
+                            ticks: { color: '#94a3b8' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderTimeline(estadoSaldos) {
+            const contenedor = document.getElementById('timelineDeudas');
+            if (!contenedor) return;
+            contenedor.innerHTML = '';
+
+            estadoSaldos.forEach((d, idx) => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden shadow-lg hover:border-slate-700 transition";
+                
+                const badgeColor = idx === 0 
+                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" 
+                    : "bg-blue-500/20 text-cyan-400 border border-cyan-500/30";
+                
+                card.innerHTML = `
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="w-6 h-6 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white flex items-center justify-center font-bold text-xs shadow-md">
+                            ${idx + 1}
+                        </span>
+                        <span class="text-[10px] uppercase font-bold px-2.5 py-0.5 rounded-full ${badgeColor}">
+                            ${idx === 0 ? '¡Primer Objetivo!' : `Paso ${idx + 1}`}
+                        </span>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-white text-sm mb-0.5">${d.nombre}</h4>
+                        <p class="text-xs text-slate-400 mb-2">Saldo inicial: <strong class="text-slate-200">${fmtMXN(d.saldo)}</strong></p>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
+                        <span class="text-slate-400">Liquidación en:</span>
+                        <span class="font-bold text-cyan-400 bg-slate-950 px-2.5 py-1 rounded-md border border-slate-800">
+                            Mes ${d.mesPagado || '--'}
+                        </span>
+                    </div>
+                `;
+                contenedor.appendChild(card);
+            });
+        }
+
+        function renderTablaAmortizacionDetallada(listaOrdenada, mesesLabels, historialPorDeuda) {
+            const thead = document.getElementById('headAmortizacion');
+            const tbody = document.getElementById('bodyAmortizacion');
+            if (!thead || !tbody) return;
+
+            let headerHTML = `<tr><th class="py-2.5 px-3">Periodo</th>`;
+            listaOrdenada.forEach(d => {
+                headerHTML += `<th class="py-2.5 px-3">${d.nombre}</th>`;
+            });
+            headerHTML += `<th class="py-2.5 px-3 text-right">Saldo Total</th></tr>`;
+            thead.innerHTML = headerHTML;
+
+            let bodyHTML = '';
+            for (let i = 0; i < mesesLabels.length; i++) {
+                const totalMes = historialPorDeuda[i].reduce((a, b) => a + b, 0);
+                bodyHTML += `<tr class="hover:bg-slate-900/80 border-b border-slate-800/60 transition">`;
+                bodyHTML += `<td class="py-2 px-3 font-semibold text-slate-300">${mesesLabels[i]}</td>`;
+                
+                historialPorDeuda[i].forEach(val => {
+                    const claseSaldo = val === 0 ? 'text-emerald-400 font-bold' : 'text-slate-400';
+                    bodyHTML += `<td class="py-2 px-3 ${claseSaldo}">${fmtMXN(val)}</td>`;
+                });
+
+                bodyHTML += `<td class="py-2 px-3 text-right font-bold text-white">${fmtMXN(totalMes)}</td>`;
+                bodyHTML += `</tr>`;
+            }
+
+            tbody.innerHTML = bodyHTML;
+        }
+
+        function toggleTablaAmortizacion() {
+            const cont = document.getElementById('contenedorTablaAmortizacion');
+            const lbl = document.getElementById('lblToggleTabla');
+            if (cont.classList.contains('hidden')) {
+                cont.classList.remove('hidden');
+                lbl.innerText = "Ocultar Detalle";
+            } else {
+                cont.classList.add('hidden');
+                lbl.innerText = "Mostrar Detalle";
+            }
+        }
+
+        function cargarEjemplo() {
+            ingresos = 28000;
+            gastos = 19500;
+            deudas = [
+                { id: 1, nombre: 'Tarjeta Banamex', saldo: 12000, minimo: 900, cat: 65.0 },
+                { id: 2, nombre: 'Préstamo Nu', saldo: 6500, minimo: 600, cat: 38.0 },
+                { id: 3, nombre: 'Tienda Departamental', saldo: 24000, minimo: 1500, cat: 52.0 }
+            ];
+
+            document.getElementById('ingresosInput').value = ingresos;
+            document.getElementById('gastosInput').value = gastos;
+
+            guardarLocalStorage();
+            calcularPresupuesto();
+            lanzarConfetti();
+            mostrarModal();
+        }
+
+        function reiniciarTodo() {
+            deudas = [];
+            ingresos = 0;
+            gastos = 0;
+            document.getElementById('ingresosInput').value = '';
+            document.getElementById('gastosInput').value = '';
+            localStorage.removeItem('cerodeudas_data');
+            calcularPresupuesto();
+        }
+
+        function mostrarModal() {
+            document.getElementById('modalMotivacional').classList.remove('hidden');
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalMotivacional').classList.add('hidden');
+        }
+
+        function lanzarConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 70,
+                    spread: 60,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // Inicialización
+        window.onload = function() {
+            lucide.createIcons();
+            cargarLocalStorage();
+            calcularTodo();
+        };
+    </script>
+</body>
+</html>

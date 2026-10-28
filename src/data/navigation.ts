@@ -9,6 +9,8 @@ export const primaryNav: NavItem[] = [
     href: '/herramientas/',
     children: [
       { label: 'Tiempo', href: '/herramientas/tiempo/', target: '_blank' },
+      { label: '0 deudas', href: '/herramientas/cero-deudas/', target: '_blank' },
+      { label: 'Deuda vs inversión', href: '/herramientas/deuda-vs-inversion/', target: '_blank' },
     ],
   },
   { label: 'Testimonios', href: '/about/#testimonials' },
