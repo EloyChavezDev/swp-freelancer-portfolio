@@ -3,27 +3,27 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
 import siteConfig from '~/config/site';
 import { graph, personSchema, breadcrumbSchema } from '~/lib/jsonld';
 
+const breadcrumbs = [
+  { name: 'Inicio', url: `${siteConfig.url}/` },
+  { name: 'Herramientas', url: `${siteConfig.url}/herramientas/` },
+  { name: 'Tiempo', url: `${siteConfig.url}/herramientas/tiempo/` },
+];
 const jsonLd = graph([
   personSchema(siteConfig),
-  breadcrumbSchema([
-    { name: 'Inicio', url: `${siteConfig.url}/` },
-    { name: 'Herramientas', url: `${siteConfig.url}/herramientas/` },
-    { name: 'Tiempo', url: `${siteConfig.url}/herramientas/tiempo/` },
-  ]),
-];
+  breadcrumbSchema(breadcrumbs),
+]);
 ---
 
 <BaseLayout
   title="TimeWorth - Calculadora de Tiempo de Vida"
   description="Calcula el costo real de tus compras en horas de trabajo y evalúa tu presupuesto con la regla 50/30/20."
-  crumbs={[{ label: 'Herramientas', href: '/herramientas/' }, { label: 'Tiempo' }]}
   jsonLd={jsonLd}
 >
   <div id="timeworth-app" class="min-h-full bg-slate-950 text-slate-100 font-sans antialiased flex flex-col justify-between pb-12 selection:bg-brand-500 selection:text-white">
 
-    <!-- Tailwind + Iconos + Chart + Fuentes (CDN, solo en esta herramienta) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
+    <!-- Tailwind config (antes del CDN para que aplique) -->
+    <script is:inline>
+      // @ts-nocheck
       tailwind.config = {
         theme: {
           extend: {
@@ -46,6 +46,7 @@ const jsonLd = graph([
         }
       }
     </script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -457,6 +458,7 @@ const jsonLd = graph([
     </div>
 
     <script>
+      // @ts-nocheck
       // State management
       let state = {
         salary: 9600,
