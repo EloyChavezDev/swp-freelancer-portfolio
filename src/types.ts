@@ -38,6 +38,8 @@ export type IconName =
   | 'quote'
   | 'spark'
   | 'star'
+  | 'sun'
+  | 'moon'
   | 'type'
   | 'up';
 

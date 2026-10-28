@@ -23,10 +23,14 @@ interface Props {
 }
 
 const { bodyClass, ...seo } = Astro.props;
+
+/* Default theme rendered on the server; the client script below corrects it
+   from localStorage / system preference before the body paints. */
+const theme = 'light';
 ---
 
 <!doctype html>
-<html lang={siteConfig.locale}>
+  <html lang={siteConfig.locale} data-theme={theme}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -47,6 +51,25 @@ const { bodyClass, ...seo } = Astro.props;
          enhancements (scroll reveal, the nav drawer) never flash. -->
     <script is:inline>
       document.documentElement.classList.add('js');
+    </script>
+
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        var saved = localStorage.getItem('swp-theme');
+        var system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        var theme = saved || system;
+        root.setAttribute('data-theme', theme);
+        root.classList.toggle('theme-dark', theme === 'dark');
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+          if (!localStorage.getItem('swp-theme')) {
+            var t = e.matches ? 'dark' : 'light';
+            root.setAttribute('data-theme', t);
+            root.classList.toggle('theme-dark', t === 'dark');
+          }
+        });
+      })();
     </script>
 
     <Seo {...seo} />
@@ -116,6 +139,29 @@ const { bodyClass, ...seo } = Astro.props;
           { passive: true }
         );
         update();
+      }
+
+      /* --- Theme toggle ----------------------------------------------- */
+      {
+        const toggle = document.getElementById('theme-toggle');
+        const root = document.documentElement;
+
+        if (toggle) {
+          const setTheme = (t: string) => {
+            root.setAttribute('data-theme', t);
+            root.classList.toggle('theme-dark', t === 'dark');
+            toggle.setAttribute('aria-pressed', t === 'dark' ? 'true' : 'false');
+            localStorage.setItem('swp-theme', t);
+          };
+
+          const current = root.getAttribute('data-theme') || 'light';
+          toggle.setAttribute('aria-pressed', current === 'dark' ? 'true' : 'false');
+
+          toggle.addEventListener('click', () => {
+            const next = current === 'dark' ? 'light' : 'dark';
+            setTheme(next);
+          });
+        }
       }
     </script>
   </body>

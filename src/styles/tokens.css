@@ -41,3 +41,17 @@
   /* Motion */
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
+
+[data-theme="dark"] {
+  /* Brand palette (inverted) */
+  --swp-shell: #0b0c0b;
+  --swp-ink: #f4f6ef;
+  --swp-graphite: #161715;
+  --swp-slate: #9aa08e;
+  --swp-mist: #171816;
+  --swp-line: #272826;
+  --swp-faint: #737868;
+
+  /* Status */
+  --swp-live: #3fa34d;
+}
