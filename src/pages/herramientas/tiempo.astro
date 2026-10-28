@@ -15,76 +15,85 @@ const jsonLd = graph([
 ---
 
 <BaseLayout
-  title="TimeWorth - Calculadora de Tiempo de Vida"
+  title="TimeWorth - ¿Cuánto tiempo de tu vida cuesta?"
   description="Calcula el costo real de tus compras en horas de trabajo y evalúa tu presupuesto con la regla 50/30/20."
   jsonLd={jsonLd}
 >
-  <div id="timeworth-app" class="min-h-full bg-slate-950 text-slate-100 font-sans antialiased flex flex-col justify-between pb-12 selection:bg-brand-500 selection:text-white">
 
-    <!-- Tailwind config (antes del CDN para que aplique) -->
-    <script is:inline>
-      // @ts-nocheck
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-              display: ['Outfit', 'sans-serif'],
+  <!-- Tailwind config (antes del CDN para que apliquen brand/needs/wants/savings) -->
+  <script>
+    // @ts-nocheck
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
             },
-            colors: {
-              brand: {
-                50: '#eef2ff',
-                500: '#6366f1',
-                600: '#4f46e5',
-                700: '#4338ca',
-              },
-              needs: '#3b82f6',
-              wants: '#ec4899',
-              savings: '#10b981',
-            }
+            needs: '#3b82f6',   // Azul 50%
+            wants: '#ec4899',   // Rosa 30%
+            savings: '#10b981', // Verde 20%
           }
         }
       }
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <style>
-      .glass-panel {
-        background: rgba(15, 23, 42, 0.75);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-      .glass-card {
-        background: rgba(30, 41, 59, 0.5);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-      }
-      .glow-effect {
-        box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.25);
-      }
-      .animate-pulse-slow {
-        animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-      }
-      ::-webkit-scrollbar {
-        width: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #090d16;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #1e293b;
-        border-radius: 9999px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #334155;
-      }
-    </style>
+  <!-- Font Family Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Styles & Animations -->
+  <style>
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.5);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .glow-effect {
+      box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.25);
+    }
+    .animate-pulse-slow {
+      animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+  </style>
+
+  <div class="min-h-full font-sans antialiased flex flex-col justify-between selection:bg-brand-500 selection:text-white pb-12">
 
     <!-- Background Decorative Blur Elements -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
@@ -457,14 +466,15 @@ const jsonLd = graph([
       </div>
     </div>
 
+    <!-- JAVASCRIPT LOGIC -->
     <script>
       // @ts-nocheck
       // State management
       let state = {
-        salary: 9600,
-        hoursPerWeek: 40,
-        itemName: 'Smartphone Gama Alta',
-        category: 'wants',
+        salary: 9600, // Salario mensual neto inicial
+        hoursPerWeek: 48,
+        itemName: 'Starbucks',
+        category: 'wants', // needs, wants, savings
         itemCost: 100,
         history: []
       };
@@ -480,6 +490,7 @@ const jsonLd = graph([
       const btnSave = document.getElementById('btn-save');
       const btnClearHistory = document.getElementById('btn-clear-history');
 
+      // Display DOM Elements
       const hourlyRateDisplay = document.getElementById('hourly-rate-display');
       const monthlyHoursDisplay = document.getElementById('monthly-hours-display');
       const resItemTitle = document.getElementById('res-item-title');
@@ -512,21 +523,6 @@ const jsonLd = graph([
       const btnInfoModal = document.getElementById('btn-info-modal');
       const btnCloseModal = document.getElementById('btn-close-modal');
       const btnCloseModal2 = document.getElementById('btn-close-modal-2');
-
-      // Formatting helpers
-      const formatMoney = (amount) => {
-        return new Intl.NumberFormat('es-MX', {
-          style: 'currency',
-          currency: 'MXN',
-          maximumFractionDigits: 0
-        }).format(amount);
-      };
-
-      const formatDecimal = (num) => {
-        return new Intl.NumberFormat('es-MX', {
-          maximumFractionDigits: 1
-        }).format(num);
-      };
 
       // Initialize
       window.addEventListener('DOMContentLoaded', () => {
@@ -567,6 +563,21 @@ const jsonLd = graph([
         btnCloseModal2.addEventListener('click', closeModal);
       });
 
+      // Formatting helpers
+      const formatMoney = (amount) => {
+        return new Intl.NumberFormat('es-MX', {
+          style: 'currency',
+          currency: 'MXN',
+          maximumFractionDigits: 0
+        }).format(amount);
+      };
+
+      const formatDecimal = (num) => {
+        return new Intl.NumberFormat('es-MX', {
+          maximumFractionDigits: 1
+        }).format(num);
+      };
+
       // Main calculation & render function
       function calculateAndRender() {
         // Read values
@@ -596,7 +607,7 @@ const jsonLd = graph([
 
         // Render Hero Time Stats
         resItemTitle.textContent = itemName;
-        animateValue(resHours, parseFloat(resHours.textContent) || 0, hoursRequired, 1);
+        animateValue(resHours, parseFloat(resHours.textContent) || 0, hoursRequired, 0);
         animateValue(resDays, parseFloat(resDays.textContent) || 0, daysRequired, 1);
         animateValue(resWeeks, parseFloat(resWeeks.textContent) || 0, weeksRequired, 1);
         animateValue(resMonths, parseFloat(resMonths.textContent) || 0, monthsRequired, 1);
@@ -652,6 +663,7 @@ const jsonLd = graph([
 
         // Update progress bar width & color
         resProgressBar.className = `h-full rounded-full transition-all duration-1000 ease-out ${catBgColorClass}`;
+        // Cap visual progress bar at 100% for display smoothness, but show exact % text
         resProgressBar.style.width = `${Math.min(percentOfCategory, 100)}%`;
 
         // Status Traffic Light Evaluation
@@ -668,11 +680,11 @@ const jsonLd = graph([
           statusIconContainer.className = "p-2 rounded-xl bg-slate-800 text-slate-400 shrink-0 mt-0.5";
           statusIconContainer.innerHTML = `<i data-lucide="info" class="w-5 h-5"></i>`;
           statusTitle.textContent = "Ingresa los datos";
-          statusTitle.className = "font-bold text-sm text-white mb-0.5";
           statusDesc.textContent = "Agrega el costo para evaluar el impacto en tu presupuesto.";
           badgeImpact.textContent = "Sin datos";
           badgeImpact.className = "text-xs font-bold px-3 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700";
         } else if (percent <= 25) {
+          // Green / Low
           statusBox.className = "p-4 rounded-2xl border bg-emerald-950/30 border-emerald-500/30 flex items-start gap-3 transition-colors";
           statusIconContainer.className = "p-2 rounded-xl bg-emerald-500/20 text-emerald-400 shrink-0 mt-0.5";
           statusIconContainer.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5"></i>`;
@@ -682,6 +694,7 @@ const jsonLd = graph([
           badgeImpact.textContent = "Impacto Bajo";
           badgeImpact.className = "text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
         } else if (percent <= 75) {
+          // Yellow / Moderate
           statusBox.className = "p-4 rounded-2xl border bg-amber-950/30 border-amber-500/30 flex items-start gap-3 transition-colors";
           statusIconContainer.className = "p-2 rounded-xl bg-amber-500/20 text-amber-400 shrink-0 mt-0.5";
           statusIconContainer.innerHTML = `<i data-lucide="alert-triangle" class="w-5 h-5"></i>`;
@@ -691,6 +704,7 @@ const jsonLd = graph([
           badgeImpact.textContent = "Impacto Moderado";
           badgeImpact.className = "text-xs font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20";
         } else {
+          // Red / High
           statusBox.className = "p-4 rounded-2xl border bg-rose-950/30 border-rose-500/30 flex items-start gap-3 transition-colors";
           statusIconContainer.className = "p-2 rounded-xl bg-rose-500/20 text-rose-400 shrink-0 mt-0.5";
           statusIconContainer.innerHTML = `<i data-lucide="alert-octagon" class="w-5 h-5"></i>`;
@@ -900,13 +914,5 @@ const jsonLd = graph([
       }
     </script>
   </div>
-</BaseLayout>
 
-<style is:global>
-  :root {
-    --tw-bg: #0f172a;
-    --tw-text: #e2e8f0;
-  }
-  body { background: var(--tw-bg); color: var(--tw-text); }
-  #timeworth-app { min-height: calc(100vh - 200px); }
-</style>
+</BaseLayout>
