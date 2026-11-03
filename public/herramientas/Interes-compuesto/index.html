@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Inversión e Interés Compuesto</title>
+    <title>Simulador de Inversión e Interés Compuesto - EloyChavezCa$h</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -50,12 +50,172 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #475569;
         }
+
+        /* PRINT / PDF STYLES */
+        @media print {
+            @page {
+                size: letter portrait;
+                margin: 12mm;
+            }
+            body {
+                background-color: #ffffff !important;
+                color: #0f172a !important;
+                font-size: 11px !important;
+            }
+            .no-print, header, footer, button {
+                display: none !important;
+            }
+            .print-header {
+                display: block !important;
+            }
+            .print-disclaimer {
+                display: block !important;
+            }
+            
+            /* Container reset */
+            main {
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .grid {
+                display: block !important;
+            }
+            
+            /* Panels and cards */
+            .bg-\[\#111827\], .bg-\[\#090d16\], .bg-\[\#1a2333\] {
+                background-color: #ffffff !important;
+                border: 1px solid #cbd5e1 !important;
+                color: #0f172a !important;
+                box-shadow: none !important;
+            }
+            
+            /* High contrast text */
+            h1, h2, h3, h4, span, label, p, td, th, div {
+                color: #0f172a !important;
+                text-shadow: none !important;
+            }
+
+            .text-slate-400, .text-slate-500, .text-slate-300 {
+                color: #475569 !important;
+            }
+
+            .text-emerald-400, .text-emerald-300 {
+                color: #047857 !important;
+            }
+
+            /* Custom input fix for print */
+            input, select {
+                background-color: #f8fafc !important;
+                border: 1px solid #94a3b8 !important;
+                color: #0f172a !important;
+                -webkit-text-fill-color: #0f172a !important;
+                font-weight: 700 !important;
+            }
+
+            /* Fix prefix positioning ($) on inputs during print */
+            .relative.rounded-xl {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                background-color: #f8fafc !important;
+                border: 1px solid #94a3b8 !important;
+                border-radius: 0.75rem !important;
+                padding-left: 0.5rem !important;
+            }
+            .relative.rounded-xl .absolute {
+                position: relative !important;
+                inset: auto !important;
+                padding-left: 0 !important;
+                margin-right: 0.25rem !important;
+                display: flex !important;
+                align-items: center !important;
+            }
+            .relative.rounded-xl span {
+                color: #0f172a !important;
+                font-weight: 700 !important;
+            }
+            .relative.rounded-xl input {
+                border: none !important;
+                background: transparent !important;
+                padding-left: 0.25rem !important;
+                width: 100% !important;
+            }
+
+            /* Gradient hero card fix */
+            .bg-gradient-to-br {
+                background: #f0fdf4 !important;
+                border: 2px solid #059669 !important;
+                color: #064e3b !important;
+            }
+            .bg-gradient-to-br * {
+                color: #064e3b !important;
+            }
+
+            /* Page Break Controls */
+            .print-page-1 {
+                page-break-after: always;
+                break-after: page;
+            }
+            .print-page-2 {
+                page-break-before: always;
+                break-before: page;
+                margin-top: 1rem;
+            }
+
+            .print-avoid-break {
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+            }
+
+            /* Canvas chart sizing */
+            .chart-wrapper {
+                height: 280px !important;
+                width: 100% !important;
+            }
+
+            /* Table styling for print */
+            table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+            th {
+                background-color: #f1f5f9 !important;
+                color: #0f172a !important;
+                border-bottom: 2px solid #94a3b8 !important;
+            }
+            td {
+                border-bottom: 1px solid #e2e8f0 !important;
+            }
+            .overflow-x-auto, .max-h-\[380px\] {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-[#090d16] text-slate-100 min-h-screen">
 
+    <!-- PRINT ONLY HEADER -->
+    <div class="hidden print-header mb-6 pb-4 border-b-2 border-emerald-600">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-slate-900 tracking-tight">
+                    EloyChavez<span class="text-emerald-700">Ca$h</span>
+                </h1>
+                <p class="text-xs text-slate-600 font-medium">Simulador de Inversión e Interés Compuesto</p>
+            </div>
+            <div class="text-right">
+                <span class="inline-block bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded font-bold mb-1">
+                    Herramienta Oficial
+                </span>
+                <p class="text-xs text-slate-600 font-medium">Contacto: <strong>eloychavezcash@gmail.com</strong></p>
+            </div>
+        </div>
+    </div>
+
     <!-- Header / Navbar -->
-    <header class="bg-[#0f172a]/80 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-50">
+    <header class="bg-[#0f172a]/80 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-50 no-print">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <div class="p-2 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
@@ -63,29 +223,32 @@
                 </div>
                 <div>
                     <h1 class="text-xl sm:text-2xl font-bold leading-tight text-white tracking-wide">
-                        Simulador de <span class="text-emerald-400">Inversión</span>
+                        EloyChavez<span class="text-emerald-400">Ca$h</span>
                     </h1>
-                    <p class="text-xs text-slate-400">Proyección de Interés Compuesto y Crecimiento Patrimonial</p>
+                    <p class="text-xs text-slate-400">Simulador de Inversión e Interés Compuesto</p>
                 </div>
             </div>
-            <div class="hidden md:flex items-center text-xs bg-emerald-950/40 text-emerald-400 border border-emerald-800/50 px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.1)]">
-                <i data-lucide="shield-check" class="w-4 h-4 mr-1.5 text-emerald-400"></i>
-                <span>Calculadora Financiera Educativa</span>
+            <div class="flex items-center space-x-3">
+                <button onclick="window.print()" class="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-lg shadow-emerald-500/20">
+                    <i data-lucide="printer" class="w-4 h-4"></i>
+                    <span>Imprimir / Guardar PDF</span>
+                </button>
+                <button>
+                <a href="/" class="px-3.5 py-2 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl transition border border-slate-700/80 flex items-center gap-1.5 cursor-pointer shadow-sm">
+                    <i data-lucide="arrow-left" class="w-3.5 h-3.5 text-cyan-400"></i> Regresar al sitio
+                </a>
+                </button>
             </div>
-             <a href="/" class="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium bg-slate-800/80 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700">
-          <i data-lucide="arrow-left" class="w-4 h-4 text-brand-500"></i>
-          Regresar al sitio
-        </a>
         </div>
     </header>
 
     <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 print-page-1">
             
             <!-- Left Panel: Inputs Form -->
-            <div class="lg:col-span-4 bg-[#111827] rounded-2xl border border-slate-800/80 p-6 flex flex-col justify-between shadow-xl shadow-black/40">
+            <div class="lg:col-span-4 bg-[#111827] rounded-2xl border border-slate-800/80 p-6 flex flex-col justify-between shadow-xl shadow-black/40 print-avoid-break">
                 <div>
                     <div class="flex items-center space-x-2 border-b border-slate-800/80 pb-4 mb-5">
                         <i data-lucide="sliders" class="w-5 h-5 text-emerald-400"></i>
@@ -103,7 +266,7 @@
                                     <span class="text-slate-500 text-sm">$</span>
                                 </div>
                                 <input type="number" min="0" step="100" id="initialDeposit" value="10000"
-                                    class="block w-full pl-7 pr-3 py-2.5 bg-[#1a2333] border border-slate-700/70 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 transition-all">
+                                    class="block w-full pl-7 pr-3 py-2.5 bg-[#1a2333] border border-slate-700/70 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 transition-all font-semibold">
                             </div>
                         </div>
 
@@ -117,7 +280,7 @@
                                     <span class="text-slate-500 text-sm">$</span>
                                 </div>
                                 <input type="number" min="0" step="10" id="contributionAmount" value="50"
-                                    class="block w-full pl-7 pr-3 py-2.5 bg-[#1a2333] border border-slate-700/70 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 transition-all">
+                                    class="block w-full pl-7 pr-3 py-2.5 bg-[#1a2333] border border-slate-700/70 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 transition-all font-semibold">
                             </div>
                         </div>
 
@@ -127,7 +290,7 @@
                                 Frecuencia de Aportación
                             </label>
                             <select id="frequency"
-                                class="block w-full px-3 py-2.5 bg-[#1a2333] border border-slate-700/70 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 transition-all">
+                                class="block w-full px-3 py-2.5 bg-[#1a2333] border border-slate-700/70 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 transition-all font-semibold">
                                 <option value="365" selected class="bg-[#111827] text-white">Diariamente (365/año)</option>
                                 <option value="52" class="bg-[#111827] text-white">Semanalmente (52/año)</option>
                                 <option value="24" class="bg-[#111827] text-white">Quincenalmente (24/año)</option>
@@ -166,24 +329,23 @@
                                 Edad de Inicio (Opcional)
                             </label>
                             <input type="number" min="1" max="90" id="startAge" value="25"
-                                class="block w-full px-3 py-2.5 bg-[#1a2333] border border-slate-700/70 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 transition-all">
+                                class="block w-full px-3 py-2.5 bg-[#1a2333] border border-slate-700/70 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 transition-all font-semibold">
                         </div>
 
                         <!-- Incremento Anual opcional -->
                         <div class="pt-3 border-t border-slate-800/80">
                             <div class="flex items-center justify-between">
                                 <label class="text-xs font-semibold text-slate-300" for="annualIncrease">
-                                    Incremento anual de aportación (%)
+                                    Incremento anual (%)
                                 </label>
                                 <input type="number" min="0" max="50" step="1" id="annualIncrease" value="0"
                                     class="w-20 px-2 py-1 bg-[#1a2333] border border-slate-700/70 rounded-lg text-right text-xs text-emerald-400 font-bold focus:outline-none focus:ring-1 focus:ring-emerald-500">
                             </div>
-                            <p class="text-[11px] text-slate-500 mt-1">Incremento opcional para ajustar inflación.</p>
                         </div>
                     </form>
                 </div>
 
-                <div class="mt-6 pt-4 border-t border-slate-800/80">
+                <div class="mt-6 pt-4 border-t border-slate-800/80 no-print">
                     <button id="resetBtn" class="w-full flex items-center justify-center space-x-2 py-2.5 px-4 border border-slate-700/80 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/60 hover:border-slate-600 transition-all">
                         <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
                         <span>Restablecer Valores</span>
@@ -191,65 +353,65 @@
                 </div>
             </div>
 
-            <!-- Right Panel: Results, Graphs & Table -->
-            <div class="lg:col-span-8 space-y-8">
+            <!-- Right Panel: Results & Chart -->
+            <div class="lg:col-span-8 space-y-6">
                 
                 <!-- Cards Summary -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 print-avoid-break">
                     <!-- Depósito Inicial -->
-                    <div class="bg-[#111827] p-5 rounded-2xl border border-slate-800/80 shadow-lg shadow-black/30 flex flex-col justify-between">
+                    <div class="bg-[#111827] p-4 rounded-2xl border border-slate-800/80 shadow-lg flex flex-col justify-between">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-xs font-medium text-slate-400">Depósito Inicial</span>
-                            <span class="p-1.5 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/20">
+                            <span class="p-1.5 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/20 no-print">
                                 <i data-lucide="wallet" class="w-4 h-4"></i>
                             </span>
                         </div>
                         <div>
-                            <div id="summaryInitial" class="text-xl font-bold text-white tracking-tight">$0</div>
-                            <div id="percentInitial" class="text-[11px] text-slate-500 mt-1">0% del total</div>
+                            <div id="summaryInitial" class="text-lg font-extrabold text-white tracking-tight">$0</div>
+                            <div id="percentInitial" class="text-[11px] text-slate-500 mt-0.5">0% del total</div>
                         </div>
                     </div>
 
                     <!-- Depósitos Acumulados -->
-                    <div class="bg-[#111827] p-5 rounded-2xl border border-slate-800/80 shadow-lg shadow-black/30 flex flex-col justify-between">
+                    <div class="bg-[#111827] p-4 rounded-2xl border border-slate-800/80 shadow-lg flex flex-col justify-between">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-xs font-medium text-slate-400">Aportaciones</span>
-                            <span class="p-1.5 bg-cyan-500/10 text-cyan-400 rounded-lg border border-cyan-500/20">
+                            <span class="p-1.5 bg-cyan-500/10 text-cyan-400 rounded-lg border border-cyan-500/20 no-print">
                                 <i data-lucide="piggy-bank" class="w-4 h-4"></i>
                             </span>
                         </div>
                         <div>
-                            <div id="summaryDeposits" class="text-xl font-bold text-white tracking-tight">$0</div>
-                            <div id="percentDeposits" class="text-[11px] text-slate-500 mt-1">0% del total</div>
+                            <div id="summaryDeposits" class="text-lg font-extrabold text-white tracking-tight">$0</div>
+                            <div id="percentDeposits" class="text-[11px] text-slate-500 mt-0.5">0% del total</div>
                         </div>
                     </div>
 
                     <!-- Intereses Acumulados -->
-                    <div class="bg-[#111827] p-5 rounded-2xl border border-slate-800/80 shadow-lg shadow-black/30 flex flex-col justify-between relative overflow-hidden">
+                    <div class="bg-[#111827] p-4 rounded-2xl border border-slate-800/80 shadow-lg flex flex-col justify-between">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-xs font-medium text-slate-400">Intereses Ganados</span>
-                            <span class="p-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg border border-emerald-500/20">
+                            <span class="p-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg border border-emerald-500/20 no-print">
                                 <i data-lucide="sparkles" class="w-4 h-4"></i>
                             </span>
                         </div>
                         <div>
-                            <div id="summaryInterests" class="text-xl font-bold text-emerald-400 tracking-tight">$0</div>
-                            <div id="percentInterests" class="text-[11px] text-emerald-400/80 font-medium mt-1">0% del total</div>
+                            <div id="summaryInterests" class="text-lg font-extrabold text-emerald-400 tracking-tight">$0</div>
+                            <div id="percentInterests" class="text-[11px] text-emerald-400/80 font-medium mt-0.5">0% del total</div>
                         </div>
                     </div>
 
                     <!-- Saldo Final Total -->
-                    <div class="bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-900 p-5 rounded-2xl text-white shadow-xl shadow-emerald-950/40 border border-emerald-500/30 flex flex-col justify-between">
+                    <div class="bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-900 p-4 rounded-2xl text-white shadow-xl border border-emerald-500/30 flex flex-col justify-between">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-xs font-medium text-emerald-100">Monto Final Estimado</span>
-                            <span class="p-1.5 bg-white/10 text-white rounded-lg backdrop-blur-sm border border-white/20">
+                            <span class="p-1.5 bg-white/10 text-white rounded-lg border border-white/20 no-print">
                                 <i data-lucide="coins" class="w-4 h-4"></i>
                             </span>
                         </div>
                         <div>
-                            <div id="summaryTotal" class="text-2xl font-extrabold tracking-tight">$0</div>
-                            <div id="summaryMonthlyPassive" class="text-[11px] text-emerald-200 mt-1 flex items-center">
-                                <i data-lucide="arrow-up-right" class="w-3 h-3 mr-0.5"></i>
+                            <div id="summaryTotal" class="text-xl font-black tracking-tight">$0</div>
+                            <div id="summaryMonthlyPassive" class="text-[11px] text-emerald-200 mt-0.5 flex items-center font-medium">
+                                <i data-lucide="arrow-up-right" class="w-3 h-3 mr-0.5 no-print"></i>
                                 <span>$0/mes rendimientos est.</span>
                             </div>
                         </div>
@@ -257,64 +419,71 @@
                 </div>
 
                 <!-- Chart Container -->
-                <div class="bg-[#111827] p-6 rounded-2xl border border-slate-800/80 shadow-xl shadow-black/40">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+                <div class="bg-[#111827] p-6 rounded-2xl border border-slate-800/80 shadow-xl print-avoid-break">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                         <div>
                             <h3 class="text-base font-bold text-white tracking-wide">Proyección de Crecimiento del Capital</h3>
-                            <p class="text-xs text-slate-400">Desglose visual del capital inicial, depósitos e interés compuesto acumulado</p>
+                            <p class="text-xs text-slate-400">Desglose visual del capital inicial, depósitos e interés compuesto</p>
                         </div>
-                        <!-- Toggle view mode -->
-                        <div class="flex items-center bg-[#1a2333] p-1 rounded-xl border border-slate-800 self-start sm:self-auto">
-                            <button id="chartTypeBar" class="px-3 py-1 text-xs font-medium rounded-lg bg-emerald-500 text-slate-950 font-semibold shadow-md transition-all">Barras</button>
+                        <div class="flex items-center bg-[#1a2333] p-1 rounded-xl border border-slate-800 self-start sm:self-auto no-print">
+                            <button id="chartTypeBar" class="px-3 py-1 text-xs font-medium rounded-lg bg-emerald-500 text-slate-950 font-semibold transition-all">Barras</button>
                             <button id="chartTypeArea" class="px-3 py-1 text-xs font-medium rounded-lg text-slate-400 hover:text-white transition-all">Área</button>
                         </div>
                     </div>
 
-                    <div class="relative w-full h-[320px]">
+                    <div class="relative w-full h-[300px] chart-wrapper">
                         <canvas id="growthChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Table Container -->
-                <div class="bg-[#111827] rounded-2xl border border-slate-800/80 shadow-xl shadow-black/40 overflow-hidden">
-                    <div class="p-6 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div>
-                            <h3 class="text-base font-bold text-white tracking-wide">Desglose Año por Año</h3>
-                            <p class="text-xs text-slate-400">Tabla explicativa del progreso de la inversión</p>
-                        </div>
-                        <button id="exportCsvBtn" class="flex items-center space-x-1.5 px-3.5 py-2 bg-[#1a2333] hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 rounded-xl text-xs font-medium transition-all shadow-sm">
-                            <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-400"></i>
-                            <span>Exportar CSV</span>
-                        </button>
-                    </div>
-
-                    <div class="overflow-x-auto max-h-[380px] overflow-y-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead class="bg-[#0f172a] text-[11px] uppercase tracking-wider text-slate-400 font-semibold sticky top-0 border-b border-slate-800">
-                                <tr>
-                                    <th class="py-3.5 px-4">Año</th>
-                                    <th class="py-3.5 px-4">Edad</th>
-                                    <th class="py-3.5 px-4 text-right">Aportación Año</th>
-                                    <th class="py-3.5 px-4 text-right">Aport. Acumuladas</th>
-                                    <th class="py-3.5 px-4 text-right">Interés Año</th>
-                                    <th class="py-3.5 px-4 text-right">Interés Acumulado</th>
-                                    <th class="py-3.5 px-4 text-right font-bold text-white">Saldo Final</th>
-                                </tr>
-                            </thead>
-                            <tbody id="yearlyTableBody" class="text-xs divide-y divide-slate-800/60 text-slate-300">
-                                <!-- Dynamic Content -->
-                            </tbody>
-                        </table>
                     </div>
                 </div>
 
             </div>
         </div>
+
+        <!-- PAGE 2 FOR PRINT: Table & Legal Notice -->
+        <div class="space-y-6 print-page-2 mt-8">
+            <!-- Table Container -->
+            <div class="bg-[#111827] rounded-2xl border border-slate-800/80 shadow-xl overflow-hidden print-avoid-break">
+                <div class="p-5 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-base font-bold text-white tracking-wide">Desglose Año por Año</h3>
+                        <p class="text-xs text-slate-400">Tabla explicativa del progreso de la inversión</p>
+                    </div>
+                    <button id="exportCsvBtn" class="no-print flex items-center space-x-1.5 px-3.5 py-2 bg-[#1a2333] hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 rounded-xl text-xs font-medium transition-all">
+                        <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-400"></i>
+                        <span>Exportar CSV</span>
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto max-h-[380px] overflow-y-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-[#0f172a] text-[11px] uppercase tracking-wider text-slate-400 font-semibold sticky top-0 border-b border-slate-800">
+                            <tr>
+                                <th class="py-3 px-4">Año</th>
+                                <th class="py-3 px-4">Edad</th>
+                                <th class="py-3 px-4 text-right">Aportación Año</th>
+                                <th class="py-3 px-4 text-right">Aport. Acumuladas</th>
+                                <th class="py-3 px-4 text-right">Interés Año</th>
+                                <th class="py-3 px-4 text-right">Interés Acumulado</th>
+                                <th class="py-3 px-4 text-right font-bold text-white">Saldo Final</th>
+                            </tr>
+                        </thead>
+                        <tbody id="yearlyTableBody" class="text-xs divide-y divide-slate-800/60 text-slate-300">
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Disclaimer Notice -->
+            <div class="p-4 bg-[#111827] rounded-xl border border-slate-800 text-center text-xs text-slate-400 print-avoid-break print-disclaimer">
+                <p><strong>Aviso Importante:</strong> Esta simulación fue generada por una herramienta de <strong>EloyChavezCa$h</strong> (Contacto: <a href="mailto:eloychavezcash@gmail.com" class="text-emerald-400 underline">eloychavezcash@gmail.com</a>) únicamente con fines educativos e ilustrativos. Los rendimientos simulados no representan ni garantizan resultados futuros ni constituyen una recomendación o asesoría financiera formal.</p>
+            </div>
+        </div>
     </main>
 
     <!-- Footer -->
-    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-xs text-slate-500 border-t border-slate-800/80 mt-12">
-        <p>* Los cálculos son simulaciones educativas basadas en rendimientos constantes y no representan garantias de rendimientos futuros.</p>
+    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-xs text-slate-500 border-t border-slate-800/80 mt-12 no-print">
+        <p>Herramienta creada por <strong>EloyChavezCa$h</strong> &bull; Contacto: <a href="mailto:eloychavezcash@gmail.com" class="text-emerald-400 hover:underline">eloychavezcash@gmail.com</a></p>
     </footer>
 
     <!-- Logic Script -->
@@ -348,10 +517,9 @@
         const chartTypeArea = document.getElementById('chartTypeArea');
 
         let growthChart = null;
-        let currentChartType = 'bar'; // 'bar' or 'line'
+        let currentChartType = 'bar';
         let currentCalculationData = [];
 
-        // Format Currency Helper
         function formatCurrency(amount) {
             return new Intl.NumberFormat('es-MX', {
                 style: 'currency',
@@ -360,12 +528,10 @@
             }).format(amount);
         }
 
-        // Format Percentage Helper
         function formatPercent(num) {
             return (num).toFixed(1) + '%';
         }
 
-        // Calculation Logic
         function calculateCompoundInterest() {
             const initialDeposit = parseFloat(initialDepositInput.value) || 0;
             let contributionAmount = parseFloat(contributionAmountInput.value) || 0;
@@ -420,7 +586,6 @@
             updateUI(initialDeposit, totalContributions, totalInterest, balance, yearlyData);
         }
 
-        // Update UI
         function updateUI(initial, contributions, interest, total, yearlyData) {
             summaryInitial.textContent = formatCurrency(initial);
             summaryDeposits.textContent = formatCurrency(contributions);
@@ -437,7 +602,7 @@
 
             const annualRate = (parseFloat(interestRateInput.value) || 0) / 100;
             const estMonthlyPassive = (total * annualRate) / 12;
-            summaryMonthlyPassive.innerHTML = `<i data-lucide="arrow-up-right" class="w-3 h-3 mr-0.5"></i> <span>${formatCurrency(estMonthlyPassive)}/mes en rendimientos</span>`;
+            summaryMonthlyPassive.innerHTML = `<i data-lucide="arrow-up-right" class="w-3 h-3 mr-0.5 no-print"></i> <span>${formatCurrency(estMonthlyPassive)}/mes rendimientos est.</span>`;
 
             renderTable(yearlyData);
             renderChart(yearlyData);
@@ -447,13 +612,12 @@
             }
         }
 
-        // Render Table
         function renderTable(data) {
             tableBody.innerHTML = '';
 
             data.forEach((row, index) => {
                 const tr = document.createElement('tr');
-                tr.className = index % 2 === 0 ? 'bg-[#111827] hover:bg-[#1a2333] transition-colors' : 'bg-[#0f172a]/50 hover:bg-[#1a2333] transition-colors';
+                tr.className = index % 2 === 0 ? 'bg-[#111827] hover:bg-[#1a2333]' : 'bg-[#0f172a]/50 hover:bg-[#1a2333]';
 
                 tr.innerHTML = `
                     <td class="py-2.5 px-4 font-semibold text-white">Año ${row.year}</td>
@@ -469,7 +633,6 @@
             });
         }
 
-        // Render Dark-themed Chart.js
         function renderChart(data) {
             const ctx = document.getElementById('growthChart').getContext('2d');
 
@@ -492,111 +655,52 @@
                         {
                             label: 'Depósito Inicial',
                             data: initialData,
-                            backgroundColor: '#3b82f6', // Bright Blue
+                            backgroundColor: '#3b82f6',
                             borderColor: '#60a5fa',
                             borderWidth: 1.5,
                             fill: isArea,
-                            pointRadius: isArea ? 0 : 3,
-                            pointHoverRadius: 6
+                            pointRadius: isArea ? 0 : 3
                         },
                         {
                             label: 'Aportaciones Acumuladas',
                             data: contributionsData,
-                            backgroundColor: '#06b6d4', // Cyan
+                            backgroundColor: '#06b6d4',
                             borderColor: '#22d3ee',
                             borderWidth: 1.5,
                             fill: isArea,
-                            pointRadius: isArea ? 0 : 3,
-                            pointHoverRadius: 6
+                            pointRadius: isArea ? 0 : 3
                         },
                         {
                             label: 'Intereses Acumulados',
                             data: interestData,
-                            backgroundColor: '#10b981', // Emerald
+                            backgroundColor: '#10b981',
                             borderColor: '#34d399',
                             borderWidth: 1.5,
                             fill: isArea,
-                            pointRadius: isArea ? 0 : 3,
-                            pointHoverRadius: 6
+                            pointRadius: isArea ? 0 : 3
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
+                    interaction: { mode: 'index', intersect: false },
                     plugins: {
                         legend: {
                             position: 'top',
-                            labels: {
-                                color: '#94a3b8',
-                                usePointStyle: true,
-                                pointStyle: 'circle',
-                                font: {
-                                    family: 'Inter',
-                                    size: 11
-                                },
-                                padding: 15
-                            }
-                        },
-                        tooltip: {
-                            padding: 12,
-                            backgroundColor: '#1e293b',
-                            borderColor: '#334155',
-                            borderWidth: 1,
-                            titleColor: '#f8fafc',
-                            bodyColor: '#cbd5e1',
-                            titleFont: { family: 'Inter', size: 13, weight: 'bold' },
-                            bodyFont: { family: 'Inter', size: 12 },
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    if (context.parsed.y !== null) {
-                                        label += formatCurrency(context.parsed.y);
-                                    }
-                                    return label;
-                                },
-                                footer: function(tooltipItems) {
-                                    let total = 0;
-                                    tooltipItems.forEach(function(tooltipItem) {
-                                        total += tooltipItem.parsed.y;
-                                    });
-                                    return 'Saldo Total: ' + formatCurrency(total);
-                                }
-                            }
+                            labels: { color: '#94a3b8', font: { family: 'Inter', size: 11 }, padding: 12 }
                         }
                     },
                     scales: {
-                        x: {
-                            stacked: true,
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: '#64748b',
-                                font: { family: 'Inter', size: 10 }
-                            }
-                        },
+                        x: { stacked: true, ticks: { color: '#64748b', font: { family: 'Inter', size: 10 } } },
                         y: {
                             stacked: true,
-                            grid: {
-                                color: '#1e293b'
-                            },
                             ticks: {
                                 color: '#64748b',
                                 font: { family: 'Inter', size: 10 },
                                 callback: function(value) {
-                                    if (value >= 1000000) {
-                                        return '$' + (value / 1000000).toFixed(1) + 'M';
-                                    } else if (value >= 1000) {
-                                        return '$' + (value / 1000).toFixed(0) + 'k';
-                                    }
+                                    if (value >= 1000000) return '$' + (value / 1000000).toFixed(1) + 'M';
+                                    if (value >= 1000) return '$' + (value / 1000).toFixed(0) + 'k';
                                     return '$' + value;
                                 }
                             }
@@ -606,7 +710,6 @@
             });
         }
 
-        // Export to CSV
         function exportToCSV() {
             if (!currentCalculationData.length) return;
 
@@ -620,13 +723,12 @@
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `simulacion_inversion_${new Date().toISOString().slice(0,10)}.csv`);
+            link.setAttribute("download", `simulacion_eloychavezcash_${new Date().toISOString().slice(0,10)}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        // Listeners
         const inputs = [
             initialDepositInput, contributionAmountInput, frequencySelect, 
             interestRateInput, yearsInput, startAgeInput, annualIncreaseInput
@@ -658,7 +760,7 @@
         chartTypeBar.addEventListener('click', () => {
             if (currentChartType !== 'bar') {
                 currentChartType = 'bar';
-                chartTypeBar.className = "px-3 py-1 text-xs font-medium rounded-lg bg-emerald-500 text-slate-950 font-semibold shadow-md transition-all";
+                chartTypeBar.className = "px-3 py-1 text-xs font-medium rounded-lg bg-emerald-500 text-slate-950 font-semibold transition-all";
                 chartTypeArea.className = "px-3 py-1 text-xs font-medium rounded-lg text-slate-400 hover:text-white transition-all";
                 renderChart(currentCalculationData);
             }
@@ -667,7 +769,7 @@
         chartTypeArea.addEventListener('click', () => {
             if (currentChartType !== 'line') {
                 currentChartType = 'line';
-                chartTypeArea.className = "px-3 py-1 text-xs font-medium rounded-lg bg-emerald-500 text-slate-950 font-semibold shadow-md transition-all";
+                chartTypeArea.className = "px-3 py-1 text-xs font-medium rounded-lg bg-emerald-500 text-slate-950 font-semibold transition-all";
                 chartTypeBar.className = "px-3 py-1 text-xs font-medium rounded-lg text-slate-400 hover:text-white transition-all";
                 renderChart(currentCalculationData);
             }
