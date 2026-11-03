@@ -8,10 +8,11 @@ export const primaryNav: NavItem[] = [
     label: 'Herramientas',
     href: '/#tools',
     children: [
+      { label: 'Interés Compuesto', href: '/herramientas/Interes-compuesto/' },
       { label: 'Tiempo', href: '/herramientas/tiempo/' },
       { label: '0 deudas', href: '/herramientas/cero-deudas/' },
       { label: 'Deuda vs inversión', href: '/herramientas/deuda-vs-inversion/' },
-      { label: 'Interés Compuesto', href: '/herramientas/Interes-compuesto/' },
+      { label: 'Compra Automotriz', href: '/herramientas/compra-automotriz/' },
     ],
   },
   { label: 'Testimonios', href: '/about/#testimonials' },
